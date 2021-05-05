@@ -17,7 +17,7 @@ const PostGame: FC<MatchProps> = ({ matchInfo }) => {
   });
 
   const [matchInfoState, setMatchInfoState] = useState(matchInfo);
-  const { data, setData } = useData();
+  const { data, changeData } = useData();
   const defaultHang = data
     ? !data.attemptHang
       ? 2
@@ -49,10 +49,11 @@ const PostGame: FC<MatchProps> = ({ matchInfo }) => {
               defaultChoice={defaultHang}
               onDataChange={(index: number) => {
                 if (index === 0)
-                  setData({ ...data, attemptHang: true, hangFail: false });
+                  changeData({ ...data, attemptHang: true, hangFail: false });
                 else if (index === 1)
-                  setData({ ...data, attemptHang: true, hangFail: true });
-                else setData({ ...data, attemptHang: false, hangFail: true });
+                  changeData({ ...data, attemptHang: true, hangFail: true });
+                else
+                  changeData({ ...data, attemptHang: false, hangFail: true });
               }}
             />
           </Section>
@@ -62,10 +63,11 @@ const PostGame: FC<MatchProps> = ({ matchInfo }) => {
               defaultChoice={defaultLevel}
               onDataChange={(index: number) => {
                 if (index === 0)
-                  setData({ ...data, attemptLevel: true, levelFail: false });
+                  changeData({ ...data, attemptLevel: true, levelFail: false });
                 else if (index === 1)
-                  setData({ ...data, attemptLevel: true, levelFail: true });
-                else setData({ ...data, attemptLevel: false, levelFail: true });
+                  changeData({ ...data, attemptLevel: true, levelFail: true });
+                else
+                  changeData({ ...data, attemptLevel: false, levelFail: true });
               }}
             />
           </Section>

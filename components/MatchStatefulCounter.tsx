@@ -13,7 +13,7 @@ const MatchStatefulCounter: FC<CounterProps> = ({
   haptic,
   name,
 }) => {
-  const { data, setData } = useData();
+  const { data, changeData } = useData();
   const [value, setValue] = useState<number>(
     data ? (data[dataTitle] ? data[dataTitle] : 0) : 0
   );
@@ -23,7 +23,7 @@ const MatchStatefulCounter: FC<CounterProps> = ({
 
     let dataCopy = { ...data };
     dataCopy[dataTitle] = value;
-    setData(dataCopy);
+    changeData(dataCopy);
   };
   return (
     <Counter

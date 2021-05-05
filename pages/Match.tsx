@@ -10,7 +10,7 @@ import { DataProvider, useData } from "../context/DataContext";
 
 const Tab = createBottomTabNavigator();
 
-type MInfo = {
+export type MInfo = {
   regional: string;
   matchNum: number;
   alliance: string;
@@ -24,7 +24,7 @@ type Props = {
 const Match: FC<Props> = ({ route }) => {
   const [matchInfo, setMatchInfo] = useState<MInfo>();
 
-  const { data, setData } = useData();
+  const { data, changeData } = useData();
 
   const { getSettingState } = React.useContext(
     SettingContext
@@ -57,12 +57,16 @@ const Match: FC<Props> = ({ route }) => {
       teams,
     });
 
-    setData({
+    const newData = {
       ...data,
       regional,
       matchNum,
       alliance,
-    });
+      minfo: matchInfo,
+    };
+
+    changeData(newData);
+    console.log(newData);
   }, []);
 
   const AutonComponent = () => (

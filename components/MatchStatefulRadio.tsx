@@ -9,7 +9,7 @@ type Props = {
 };
 
 const MatchStatefulRadio: FC<Props> = ({ options, values, dataTitle }) => {
-  const { data, setData } = useData();
+  const { data, changeData } = useData();
   const [value, setValue] = useState(
     data ? (data[dataTitle] ? data[dataTitle] : values[0]) : values[0]
   );
@@ -23,7 +23,7 @@ const MatchStatefulRadio: FC<Props> = ({ options, values, dataTitle }) => {
     setSelectedIndex(index);
     let dataCopy = { ...data };
     dataCopy[dataTitle] = values[index];
-    setData(dataCopy);
+    changeData(dataCopy);
   };
   return (
     <RadioGroup

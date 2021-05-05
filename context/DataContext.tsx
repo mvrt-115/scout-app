@@ -1,4 +1,11 @@
-import React, { createContext, FC, useContext, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, {
+  createContext,
+  FC,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { MatchData } from "../pages/Match";
 
 let data: MatchData = {
@@ -32,13 +39,15 @@ let data: MatchData = {
   preloads: 0,
   positionDisabled: false,
   trench: false,
+  climbTime: 0,
 };
+
 let setData: React.Dispatch<React.SetStateAction<MatchData>> = (
   newData: MatchData
 ) => (data = newData);
 const DataContext = createContext({
   data,
-  setData,
+  changeData: setData,
 });
 
 const useData = () => {
@@ -77,11 +86,29 @@ const DataProvider: FC = ({ children }) => {
     preloads: 0,
     positionDisabled: false,
     trench: false,
+    climbTime: 0,
   });
+
+  useEffect(() => {
+    (async () => {
+      const jsonStr = await AsyncStorage.getItem("@scout_data");
+      const jsonData = JSON.parse(jsonStr);
+      setData(jsonData);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      console.log(data);
+      await AsyncStorage.setItem("@scout_data", JSON.stringify(data));
+    })();
+  }, [data]);
+
+  const changeData = (newData: MatchData) => setData(newData);
 
   const value = {
     data,
-    setData,
+    changeData,
   };
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 };

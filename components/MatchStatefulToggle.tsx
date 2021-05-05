@@ -9,7 +9,7 @@ type ToggleProps = {
 };
 
 const MatchStatefulToggle: FC<ToggleProps> = ({ dataTitle, name }) => {
-  const { data, setData } = useData();
+  const { data, changeData } = useData();
   const [value, setValue] = useState<boolean>(
     data ? (data[dataTitle] ? data[dataTitle] : false) : false
   );
@@ -18,7 +18,7 @@ const MatchStatefulToggle: FC<ToggleProps> = ({ dataTitle, name }) => {
     setValue(newVal);
     let dataCopy = data;
     dataCopy[dataTitle] = newVal;
-    setData(dataCopy);
+    changeData(dataCopy);
   };
   return (
     <Toggle checked={value} onChange={handleChange}>

@@ -22,6 +22,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { PostGame } from ".";
 
 import { SettingContext } from "../context/SettingContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
@@ -42,6 +43,10 @@ const Home: React.FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     (async () => {
+      const jsonStr = await AsyncStorage.getItem("@scout_data");
+      const jsonData = JSON.parse(jsonStr);
+      setData(jsonData.minfo);
+      console.log(jsonData);
       setLoading(false);
     })();
   }, []);
@@ -68,7 +73,7 @@ const Home: React.FC<Props> = ({ navigation }) => {
         </Button>
         <Button
           onPress={() => {
-            navigation.navigate("Match", { data: "1@MVHS:b[115,115,115]" });
+            navigation.navigate("Match", { data });
             haptic && Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           }}
           style={[styles.button, { shadowOpacity: 0 }]}

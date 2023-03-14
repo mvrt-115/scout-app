@@ -37,7 +37,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
         const prompts: any[] = []
         await db
             .collection('years')
-            .doc('2022')
+            .doc(`${new Date().getFullYear()}`)
             .collection('scouting')
             .doc('pitScouting').get().then((data) => {
                 let arr = data.data()?.pitScoutingQuestions;

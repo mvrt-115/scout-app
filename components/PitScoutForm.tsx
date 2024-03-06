@@ -17,8 +17,8 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
 
     const pitScoutFields = usePitScout((state) => state.pitScoutFields);
     const setPitScoutFields = usePitScout((state) => state.setPitScoutFields);
-    const [regionals, setRegionals] = useState<string[]>(['cc']);
-    const [regional, setRegional] = useState<string>('cc');
+    const [regionals, setRegionals] = useState<string[]>(['cave']);
+    const [regional, setRegional] = useState<string>('cave');
     const year = new Date().getFullYear();
    // const [teamNum, setTeamNum] = useState<number>();
     const [hasData, setHasData] = useState<boolean>(false);
@@ -149,6 +149,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
             if (typeof field['value'] === 'object') answers[field['name']] = field['selected'];
             else answers[field['name']] = field['value'];
         });
+        answers["Team Number"] = team;
         
         let teamNew: any = {};
         let temp = [...teams];

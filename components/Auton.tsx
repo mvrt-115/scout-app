@@ -25,8 +25,6 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 	const autonFields = useAuton((state) => state.autonFields);
 	const setAutonFields = useAuton((state) => state.setAutonFields);
 	const setField = useAuton((state) => state.setField);
-	const [ didCharge, setDidCharge ] = useState(false);
-	const [ gamePiece, setGamePiece ] = useState("");
 
 	const initializeAutonFields = () => {
 		const tempAuton: any[] = [];
@@ -67,25 +65,11 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 				}}
 			// keyboardDismissMode="on-drag"
 			>
-		
-		{gamePiece.match("Cone") ? <Button onPress={()=>{setGamePiece('')}} appearance="filled"> ⚠️	</Button> : <Button onPress={()=>{setGamePiece('Cone')}} appearance="outline"> ⚠️	 </Button>}
-      	{gamePiece.match("Cube") ? <Button onPress={()=>{setGamePiece('')}} appearance="filled"> 🟪 </Button> : <Button onPress={()=>{setGamePiece('Cube')}} appearance="outline"> 🟪 </Button>}			
 				
 				{fields?.map((field, index) => {
 					const [name, type] = [field['name'], field['type']];
 					if (type === 'counter' || type === 'rating') {
-						if(gamePiece == "") return;
-          				if(field['name'].includes('Cube') && !gamePiece.match("Cube")) return;
-          				if(field['name'].includes('Cone') && !gamePiece.match("Cone")) return;
 						var labelname=field['name'];
-						if(gamePiece.match('Cone')) {
-							if(labelname.indexOf('Cone') != -1) {
-							labelname=labelname.substring(0, labelname.indexOf("Cone")) + labelname.substring(labelname.indexOf('Cone') + 4);}
-						}
-						if(gamePiece.match('Cube')) {
-							if(labelname.indexOf('Cube') != -1) {
-							labelname=labelname.substring(0, labelname.indexOf("Cube")) + labelname.substring(labelname.indexOf('Cube') + 4);}
-						}
 						return (
 							<>
 							<Counter
@@ -95,7 +79,6 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 									const temp: any[] = [...autonFields];
 									temp[index] = val;
 									setAutonFields(temp);
-									setTimeout(()=>{setGamePiece("")}, 250);
 								}}
 								value={autonFields[index] == '' ? 0 : autonFields[index]}
 							/>
@@ -103,25 +86,11 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 						);
 					}
 					else if (field['type'] == 'boolean') {
-						if (!didCharge && (field['name'] === 'Auton Docked' || field['name'] === 'Auton Engaged')) return;
 						return (
 						  <Toggle
 							checked={autonFields[index]}
 							onChange={(val) => {
 								const temp: any[] = [...autonFields];
-								if (field['name'] === 'Auton Did Charge'){
-									setDidCharge(val);
-									if(!val){
-										fields.forEach((value, i)=>{
-											if(value['name'].indexOf("Docked")>-1 || value['name'].indexOf("Engaged")>-1){
-												temp[i] = false;
-											}
-											if(value['name'].indexOf("Charge Time")>-1){
-												temp[i] = 0;
-											}
-										})
-									}
-								}
 								temp[index] = val;
 								setAutonFields(temp);
 							}}
@@ -135,11 +104,9 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 						)
 					  }
 					else if (field['type'] == 'timer') {
-						if(didCharge){
-						  return (
+						return (
 							<Stopwatch name={field['name']} onChange={setField} fieldIndex={index} postFields={autonFields} ></Stopwatch>
-						  )
-						}
+						)
 					}
 					else {
 						return (

@@ -25,7 +25,7 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
   const postGameFields = usePostGame((state) => state.postGameFields);
   const setPostGameFields = usePostGame((state) => state.setPostGameFields);
   const setField = usePostGame((state) => state.setField);
-  const [didCharge, setDidCharge] = useState<boolean>(false);
+  const [didClimb, setDidClimb] = useState<boolean>(false);
 
 
   useEffect(() => {
@@ -84,20 +84,19 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
             )
           }
           else if (field['type'] == 'boolean') {
-            if (!didCharge && (field['name'] === 'Endgame Docked' || field['name'] === 'Endgame Engaged')) return;
             return (
               <Toggle
                 checked={postGameFields[index]}
                 onChange={(val) => {
                   const temp: any[] = [...postGameFields];
-                  if (field['name'] === 'Endgame Did Charge'){
-										setDidCharge(val);
+                  if (field['name'] === 'Did Climb'){
+										setDidClimb(val);
 										if(!val){
 											fields.forEach((value, i)=>{
-												if(value['name'].indexOf("Docked")>-1 || value['name'].indexOf("Engaged")>-1){
+												if(value['name'].indexOf("Climb Level")>-1 || value['name'].indexOf("Engaged")>-1){
 													temp[i] = false;
 												}
-												if(value['name'].indexOf("Charge Time")>-1){
+												if(value['name'].indexOf("Climb Time")>-1){
 													temp[i] = 0;
 												}
 											})
@@ -132,14 +131,14 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
             )
           }
           else if (field['type'] == 'timer') {
-            if(didCharge){
+            if(didClimb){
               return (
                 <Stopwatch name={field['name']} onChange={setField} fieldIndex={index} postFields={postGameFields} ></Stopwatch>
               )
             }
           }
           else if (Array.isArray(field['type'])) {
-            // if (field['name'] === 'Climb rung' && !didClimb) return;
+            if (field['name'] == 'Climb Level' && !didClimb) return;
             return <Select
               selectedIndex={new IndexPath(field['type'].indexOf(postGameFields[index]))}
               onSelect={(currIndex) => {

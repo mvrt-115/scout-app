@@ -93,8 +93,8 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
 										setDidClimb(val);
 										if(!val){
 											fields.forEach((value, i)=>{
-												if(value['name'].indexOf("Climb Level")>-1 || value['name'].indexOf("Engaged")>-1){
-													temp[i] = false;
+												if(value['name'].indexOf("Climb Level")>-1){
+													temp[i] = "None"
 												}
 												if(value['name'].indexOf("Climb Time")>-1){
 													temp[i] = 0;

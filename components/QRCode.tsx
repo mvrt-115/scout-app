@@ -69,7 +69,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
     const pushData = async () => {
         const data = getData();
         let autonFields: any[] = [], teleopFields: any[] = [], endGameFields: any[] = [];
-        const scoutingDocs = db.collection('years').doc('2023').collection('scouting');
+        const scoutingDocs = db.collection('years').doc('2024').collection('scouting');
         await scoutingDocs.doc('auton').get().then((autonData) => {
             autonFields = Object.values(autonData.data()?.autonFields || {}).map((field: any) => dataType(field));
         });
@@ -90,7 +90,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
             pushingData[field['name']] = data.postGameFields[index];
         });
         pushingData['matchNum'] = preGameState.matchNum;
-        await db.collection('years').doc('2023').collection('regionals').doc(preGameState.regional)
+        await db.collection('years').doc('2024').collection('regionals').doc(preGameState.regional)
             .collection("teams").doc(data.teamNum + "").collection("matches").doc(preGameState.matchNum + '').set(pushingData);
         Toast.show({ type: 'success', text1: 'Successfully saved data!' });
         setTimeout(() => {

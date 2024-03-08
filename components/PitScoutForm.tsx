@@ -159,6 +159,8 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
         temp.forEach((field) => {
             teamNew[field['name']] = field['value'];
         });
+        Alert.alert(JSON.stringify(answers));
+        Alert.alert(team);
         db
             .collection('years')
             .doc(`${new Date().getFullYear()}`)
@@ -181,7 +183,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                 })
             });
             
-            db
+            /*db
             .collection('years')
             .doc(year+'')
             .collection('regionals')
@@ -199,7 +201,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                     type: 'error',
                     text1: err.message
                 })
-            });
+            });*/
 
     }
 

@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import { ScrollView, Text, Alert, View, TouchableOpacity } from 'react-native';
-import { auth, db } from '../firebase';
+import { db } from '../firebase';
 import { Button, IndexPath, Input, Select, SelectItem, Spinner, Toggle } from '@ui-kitten/components';
 import { usePitScout } from "../Stores";
 import Counter from "./Counter";
@@ -43,14 +43,14 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
             })();
         }
         (async () => {
-            setTeams(await getTeams());
+            //setTeams(await getTeams());
         })();
         setLoading(false);
     }, [])
 
     useEffect(() => {
         (async () => {
-            setTeams(await getTeams());
+            //setTeams(await getTeams());
         })();
     }, [finishTeam, regional])
 
@@ -149,7 +149,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
             if (typeof field['value'] === 'object') answers[field['name']] = field['selected'];
             else answers[field['name']] = field['value'];
         });
-        answers["Team Number"] = team;
+        //answers["Team Number"] = team;
         
         let teamNew: any = {};
         let temp = [...teams];
@@ -208,7 +208,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
     }
 
     const isLoggedIn = (): boolean => {
-        return auth.currentUser != null;
+        return true;
     }
 
     const handlePictureCapture = (data: any) => {
@@ -255,18 +255,6 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                     value={regional}
                 >
                     {regionals.map(r => <SelectItem title={r} />)}
-                </Select>
-                <Select
-                    selectedIndex={new IndexPath(teams.indexOf(team || ''))}
-                    label={'Select Team'}
-                    onSelect={(currIndex) => {
-                        setTeam(teams[parseInt(currIndex.toString()) - 1]["name"]);
-                    }}
-                    placeholder="Select Team"
-                    style={{ marginBottom: '4%' }}
-                    value={team}
-                >
-                    {teams.map(r => <SelectItem title={r["name"]} disabled={r["value"]}/>)}
                 </Select>
                 {pitScoutFields.map((field: any, index: number) => {
                     if (Array.isArray(field['value'])) {
@@ -373,10 +361,6 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                             />
                         );
                     } else if (field['value'] === 'short') {
-                        if (field['name'] === 'Team Number'){
-                            return;
-                        }
-                        else {
                         return (
                             <Input
                                 multiline={false}
@@ -397,14 +381,10 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                                 }}
                             />
                         );
-                        }
                     } else if(field['value'] === 'multiselect') {
                     
                     }
                     else {
-                        if (field['name'] === 'Team Number') {
-                            return;
-                        }
                         return (
                             <Input
                                 multiline={true}
@@ -464,7 +444,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                     }}
                     appearance="outline"
                     onPress={() => {
-                        isLoggedIn() ? pushData() : navigation?.navigate("Login");
+                        pushData();
                     }}
                 >
                     Finish Scout

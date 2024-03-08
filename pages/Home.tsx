@@ -10,7 +10,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuton, usePostGame, usePreGame, useTeleop } from "../Stores";
 import { Navigate } from "react-router-dom";
-import { auth } from '../firebase'
+//import { auth } from '../firebase'
 import Toast from 'react-native-toast-message';
 
 interface Props {
@@ -23,14 +23,14 @@ const Home: React.FC<Props> = ({ navigation }) => {
   const setAuton = useAuton((state) => state.set);
   const setTeleop = useTeleop((state) => state.set);
   const setPostGame = usePostGame((state) => state.set);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   useEffect(() => {
     //("HOME");
-    auth.onAuthStateChanged(user => {
-      if (user) setIsLoggedIn(true);
-      else setIsLoggedIn(false);
-    });
+    // auth.onAuthStateChanged(user => {
+    //   if (user) setIsLoggedIn(true);
+    //   else setIsLoggedIn(false);
+    // });
     (async () => {
       try {
         const [pregameStr, autonStr, teleopStr, endgameStr] = await Promise.all(

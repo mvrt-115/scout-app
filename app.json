@@ -12,6 +12,17 @@
       "package": "com.mvrt.scout",
       "versionCode": 1
     },
-    "plugins": []
+    "plugins": [],
+    "extra": {
+      "eas": {
+        "projectId": "a3310fc3-6330-43d9-932e-2089e56d6f15"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a3310fc3-6330-43d9-932e-2089e56d6f15"
+    }
   }
 }

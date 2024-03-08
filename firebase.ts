@@ -1,7 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import firebase from 'firebase/app';
+//require('firebase/auth'); //FIxes the issue for some reason
 import 'firebase/firestore';
 import 'firebase/storage';
+
+//import 'firebase/firestore';
+//import 'firebase/storage';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -32,6 +35,6 @@ const firebaseConfig = {
 // Initialize Firebase  
 const app = firebase.initializeApp(firebaseConfig);
 export const db = firebase.firestore();
-export const auth = firebase.auth();
+//export const auth = firebase.auth();
 export const storage = app.storage();
 export default firebase;

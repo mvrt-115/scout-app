@@ -53,7 +53,7 @@ const Teleop: FC<TeleopProps> = ({ navigation, fields }) => {
       <Header
         matchInfo={{ teams, alliance, regional }}
         title={"Teleop"}
-        toggleQRCode={() => sheetRef.current?.snapTo(1)}
+        toggleQRCode={() => sheetRef.current?.snapToPosition(1)}
         navigation={navigation}
       />
       <ScrollView

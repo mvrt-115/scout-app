@@ -3,7 +3,6 @@ import { View, TouchableOpacity, Alert } from "react-native";
 import { Text } from "@ui-kitten/components";
 import { Ionicons } from "@expo/vector-icons";
 import QRCodeBottomSheet from "./QRCode";
-import { auth } from '../firebase';
 import { Navigator } from 'react-router-dom';
 import Toast from "react-native-toast-message";
 import { NavigationParams, NavigationScreenProp, NavigationState } from "react-navigation";
@@ -22,13 +21,13 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = ({ title, matchInfo, toggleQRCode, navigation }) => {
 
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  const [loggedIn, setLoggedIn] = useState<boolean>(true);
   const teamNum = usePreGame((state) => state.teamNum);
   useEffect(() => {
-    auth.onAuthStateChanged(user => {
-      if (user) setLoggedIn(true);
-      else setLoggedIn(false);
-    });
+    // auth.onAuthStateChanged(user => {
+    //   if (user) setLoggedIn(true);
+    //   else setLoggedIn(false);
+    // });
   }, [])
 
   return (
@@ -54,21 +53,21 @@ const Header: FC<HeaderProps> = ({ title, matchInfo, toggleQRCode, navigation })
         </View>
         {loggedIn ? <TouchableOpacity
           onPress={() => {
-            auth.signOut().then(() => {
-              Toast.show({
-                type: "success",
-                text1: "Successfully signed out!",
-                visibilityTime: 2500,
-                autoHide: true,
-              });
-            }).catch((err) => {
-              Toast.show({
-                type: "error",
-                text1: "Error signing out: " + err.message,
-                visibilityTime: 2500,
-                autoHide: true,
-              });
-            });
+            // auth.signOut().then(() => {
+            //   Toast.show({
+            //     type: "success",
+            //     text1: "Successfully signed out!",
+            //     visibilityTime: 2500,
+            //     autoHide: true,
+            //   });
+            // }).catch((err) => {
+            //   Toast.show({
+            //     type: "error",
+            //     text1: "Error signing out: " + err.message,
+            //     visibilityTime: 2500,
+            //     autoHide: true,
+            //   });
+            // });
           }}
           style={{
             marginTop: 10,

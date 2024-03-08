@@ -11,7 +11,8 @@ import Login from "./pages/Login";
 import Match from "./pages/Match";
 import PitScout from './pages/PitScout';
 import Comment from "./components/Comment";
-import { auth } from "./firebase";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+//import { auth } from "./firebase";
 
 console.warn = () => { };
 console.log = () => { };
@@ -23,40 +24,42 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <ApplicationProvider {...eva} theme={eva.light}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Home"
-            component={Home}
-          />
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="QRScanner"
-            component={QRScanner}
-          />
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Login"
-            component={Login}
-          />
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Match"
-            component={Match}
-          />
-          <Stack.Screen
-            name="PitScout"
-            component={PitScout}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Comment"
-            component={Comment}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="Home"
+              component={Home}
+            />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="QRScanner"
+              component={QRScanner}
+            />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="Login"
+              component={Login}
+            />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="Match"
+              component={Match}
+            />
+            <Stack.Screen
+              name="PitScout"
+              component={PitScout}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Comment"
+              component={Comment}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </GestureHandlerRootView>
     </ApplicationProvider>
   );
 }

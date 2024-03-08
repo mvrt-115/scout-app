@@ -1,0 +1,10 @@
+{
+    "build": {
+      "preview": {
+        "channel": "preview"
+      },
+      "production": {
+        "channel": "default"
+      }
+    }
+  }

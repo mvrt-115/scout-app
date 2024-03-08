@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-import { db, auth } from "../firebase";
+import { db } from "../firebase";
 import Toast from "react-native-toast-message";
 import { Input } from "@ui-kitten/components";
 
@@ -33,27 +33,27 @@ const Login: FC<MatchProps> = ({ route, navigation }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const handleLogin = () => {
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        navigation.goBack();
-        Toast.show({
-          type: "success",
-          text1: "Successfully signed in!",
-          visibilityTime: 2500,
-          autoHide: true,
-        });
-      })
-      .catch((error) => { 
-        if (error.code === "auth/invalid-email")
-          Toast.show({type: 'error', text1: "You did not enter a valid Email"});
-        else if (error.code === "auth/user-not-found")
-          Toast.show({type: 'error', text1: "This user could not be found"});
-        else if (error.code === "auth/wrong-password")
-          Toast.show({type: 'error', text1: "Invalid Password"});
-      });
-  };
+  // const handleLogin = () => {
+  //   auth
+  //     .signInWithEmailAndPassword(email, password)
+  //     .then(() => {
+  //       navigation.goBack();
+  //       Toast.show({
+  //         type: "success",
+  //         text1: "Successfully signed in!",
+  //         visibilityTime: 2500,
+  //         autoHide: true,
+  //       });
+  //     })
+  //     .catch((error) => { 
+  //       if (error.code === "auth/invalid-email")
+  //         Toast.show({type: 'error', text1: "You did not enter a valid Email"});
+  //       else if (error.code === "auth/user-not-found")
+  //         Toast.show({type: 'error', text1: "This user could not be found"});
+  //       else if (error.code === "auth/wrong-password")
+  //         Toast.show({type: 'error', text1: "Invalid Password"});
+  //     });
+  // };
   return (
     <>
     <Toast position="bottom" bottomOffset={20}/>
@@ -114,9 +114,9 @@ const Login: FC<MatchProps> = ({ route, navigation }) => {
           /> */}
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => handleLogin()} style={styles.button}>
+          {/* <TouchableOpacity onPress={() => handleLogin()} style={styles.button}>
             <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </KeyboardAvoidingView>
     </>

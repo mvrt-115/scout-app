@@ -20,7 +20,7 @@ import {
     NavigationParams,
 } from "react-navigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { db, auth } from '../firebase'
+import { db } from '../firebase'
 import Toast from "react-native-toast-message";
 import { Navigate } from 'react-router-dom';
 
@@ -38,7 +38,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
     const snapPoints = useMemo(() => [1, "75%"], []);
 
     const [showQR, setShowQR] = useState<boolean>(false);
-    const [login, setLogin] = useState<boolean>(false);
+    const [login, setLogin] = useState<boolean>(true);
     const preGameState = usePreGame((state) => state);
     const autonState = useAuton((state) => state);
     const teleopState = useTeleop((state) => state);
@@ -48,7 +48,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
     const setPostGameFields = usePostGame((state) => state.setPostGameFields);
 
     const isLoggedIn = () => {
-        return auth.currentUser != null;
+        return true;
     }
 
     const dataType = (field: any) => {
@@ -194,7 +194,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
                                 width: "100%",
                             }}
                             onPress={() => {
-                                isLoggedIn() ? pushData() : navigation?.navigate("Login");
+                                pushData();
                             }}
                         >
                             Finish Scout

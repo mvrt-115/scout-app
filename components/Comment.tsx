@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import { ScrollView, Text, Alert, View, SafeAreaView, TouchableOpacity } from 'react-native';
-import { auth, db } from '../firebase';
+import { db } from '../firebase';
 import { Button, IndexPath, Input, Select, SelectItem, Spinner, Toggle } from '@ui-kitten/components';
 import { usePitScout } from "../Stores";
 import Counter from "./Counter";
@@ -14,8 +14,8 @@ interface CommentProps {
 
 const Comment: FC<CommentProps> = ({ navigation }) => {
 
-    const [regionals, setRegionals] = useState<string[]>(['cc']);
-    const [regional, setRegional] = useState<string>('cc');
+    const [regionals, setRegionals] = useState<string[]>(['cave']);
+    const [regional, setRegional] = useState<string>('cave');
     const [hasData, setHasData] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [teams, setTeams] = useState<Object[]>([{name: '', value: false}]);
@@ -101,11 +101,11 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
     }
 
     const isLoggedIn = (): boolean => {
-        return auth.currentUser != null;
+        return true;
     }
 
     return (!loading ?
-        <>
+        <></> : <></>)/*
             <View style={{width: "90%", paddingLeft: "10%"}}>
             <Toast position="bottom" bottomOffset={20} />
             <ScrollView
@@ -187,7 +187,7 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
                     }}
                     appearance="outline"
                     onPress={() => {
-                        isLoggedIn() ? pushData() : navigation?.navigate("Login");
+                        pushData();
                     }}
                 >
                     Add Comment
@@ -208,5 +208,5 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
         
     );
 }
-
+*/}
 export default Comment;

@@ -54,7 +54,7 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 			<Header
 				matchInfo={{ teams, alliance, regional }}
 				title={"Auton"}
-				toggleQRCode={() => sheetRef.current?.snapTo(1)}
+				toggleQRCode={() => sheetRef.current?.snapToPosition(1)}
 				navigation={navigation}
 			/>
 			<ScrollView

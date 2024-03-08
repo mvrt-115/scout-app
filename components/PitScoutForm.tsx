@@ -150,7 +150,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
             else answers[field['name']] = field['value'];
         });
         //answers["Team Number"] = team;
-        
+        let team = parseInt(answers["Team Number"])+"";
         let teamNew: any = {};
         let temp = [...teams];
         const newVal = {name: team, value: true}

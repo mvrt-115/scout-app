@@ -58,7 +58,7 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
       <Header
         matchInfo={{ teams, alliance, regional }}
         title={"EndGame"}
-        toggleQRCode={() => sheetRef.current?.snapToPosition(1)}
+        toggleQRCode={() => sheetRef.current?.snapToIndex(1)}
         navigation={navigation}
       />
       <ScrollView

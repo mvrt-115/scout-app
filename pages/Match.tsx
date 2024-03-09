@@ -86,11 +86,11 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
     }
 
     const hardCode = () =>{
-        const autonStuff = ["Mobility: boolean", "Auton Upper Cone: counter", "Auton Upper Cone Missed: counter", "Auton Mid Cone: counter", "Auton Mid Cone Missed: counter", "Auton Lower Cone: counter", "Auton Lower Cone Missed: counter", "Auton Upper Cube: counter", "Auton Upper Cube Missed: counter", "Auton Mid Cube: counter", "Auton Mid Cube Missed: counter", "Auton Lower Cube: counter", "Auton Lower Cube Missed: counter", "Auton Did Charge: boolean", "Auton Docked: boolean", "Auton Engaged: boolean", "Auton Charge Time: timer"]
+        const autonStuff = ["Auton Amp Scored: counter", "Auton Amp Missed: counter", "Auton Speaker Scored: counter", "Auton Speaker Missed: counter", "Mobility: boolean"]
         setAutonFields(autonStuff.map((field: any) => getData(field)));
-        const teleopStuff = ["Teleop Upper Cone: counter", "Teleop Upper Cone Missed: counter", "Teleop Mid Cone: counter", "Teleop Mid Cone Missed: counter", "Teleop Lower Cone: counter", "Teleop Lower Cone Missed: counter", "Teleop Upper Cube: counter", "Teleop Upper Cube Missed: counter", "Teleop Mid Cube: counter", "Teleop Mid Cube Missed: counter", "Teleop Lower Cube: counter", "Teleop Lower Cube Missed: counter", "Played Defense: boolean"]
+        const teleopStuff = ["Teleop Amp Scored: counter", "Teleop Amp Missed: counter", "Teleop Speaker Scored: counter", "Teleop Speaker Missed: counter", "Played Defense: boolean"]
         setTeleopFields(teleopStuff.map((field: any) => getData(field)));
-        const endgameStuff = ["Parked: boolean", "Endgame Did Charge: boolean", "Endgame Docked: boolean", "Endgame Engaged: boolean", "Tipped: boolean", "Comments: text"]
+        const endgameStuff = ["Did Climb: boolean", "Climb Time: timer", {"Climb Level": ["None", "Solo", "Harmony"]}, "Trap: boolean", "Park: boolean", "Drive Rating: rating", "Comments: text"]
         setEndGameFields(endgameStuff.map((field: any) => getData(field)));
     }
     const fetchData = async () => {

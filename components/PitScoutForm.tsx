@@ -159,8 +159,6 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
         temp.forEach((field) => {
             teamNew[field['name']] = field['value'];
         });
-        Alert.alert(JSON.stringify(answers));
-        Alert.alert(team);
         db
             .collection('years')
             .doc(`${new Date().getFullYear()}`)

@@ -144,7 +144,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
             <BottomSheet
                 ref={sheetRef}
                 index={0}
-                animateOnMount={false}
+                animateOnMount={true}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
                 style={{

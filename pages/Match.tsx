@@ -90,7 +90,7 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
         setAutonFields(autonStuff.map((field: any) => getData(field)));
         const teleopStuff = ["Teleop Amp Scored: counter", "Teleop Amp Missed: counter", "Teleop Speaker Scored: counter", "Teleop Speaker Missed: counter", "Played Defense: boolean"]
         setTeleopFields(teleopStuff.map((field: any) => getData(field)));
-        const endgameStuff = ["Did Climb: boolean", "Climb Time: timer", {"Climb Level": ["None", "Solo", "Harmony"]}, "Trap: boolean", "Park: boolean", "Drive Rating: rating", "Comments: text"]
+        const endgameStuff = ["Did Climb: boolean", "Climb Time: timer", {"Climb Level": ["None", "Solo", "Harmony"]}, "Trap: boolean", "Parked: boolean", "Drive Rating: rating", "Comments: text"]
         setEndGameFields(endgameStuff.map((field: any) => getData(field)));
     }
     const fetchData = async () => {

@@ -78,7 +78,7 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
             'comment': comment,
             'match': match,
         }
-        Alert.alert(JSON.stringify(val));
+        //Alert.alert(JSON.stringify(val));
         db
             .collection('years')
             .doc(`${new Date().getFullYear()}`)

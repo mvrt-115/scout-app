@@ -17,8 +17,8 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
 
     const pitScoutFields = usePitScout((state) => state.pitScoutFields);
     const setPitScoutFields = usePitScout((state) => state.setPitScoutFields);
-    const [regionals, setRegionals] = useState<string[]>(['cave']);
-    const [regional, setRegional] = useState<string>('cave');
+    const [regionals, setRegionals] = useState<string[]>(['camb']);
+    const [regional, setRegional] = useState<string>('camb');
     const year = new Date().getFullYear();
    // const [teamNum, setTeamNum] = useState<number>();
     const [hasData, setHasData] = useState<boolean>(false);
@@ -213,7 +213,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
 
     const handlePictureCapture = (data: any) => {
         setImage(data.uri);
-        Alert.alert(image);
+        //(image);
     }
 
     return (!loading ?
@@ -406,7 +406,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                         );
                     }
                 })}
-                <Button
+                {/*<Button
                     style={{
                         marginTop: '5%',
                         width: '100%',
@@ -435,7 +435,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                     }}
                 >
                     Take Photo!
-                </Button>
+                </Button>*/}
                 <Button
                     status="danger"
                     style={{

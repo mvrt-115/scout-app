@@ -1,5 +1,7 @@
+//adjust as per documention/changelogs
 import { Button, Modal, Card, Text } from "@ui-kitten/components";
-import { BarCodeScanner } from "expo-barcode-scanner";
+//import { BarCodeScanner } from "expo-barcode-scanner";
+import {Camera, CameraView} from "expo-camera";
 import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, View, Vibration, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -37,7 +39,7 @@ const QRScanner: FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     (async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === "granted");
       setScanning(true);
     })();
@@ -51,14 +53,7 @@ const QRScanner: FC<Props> = ({ navigation }) => {
           setFacing(facing === "back" ? "front" : "back");
         }}
       >
-        <View style={styles.container}>
-          {hasPermission && scanning && (
-            <BarCodeScanner
-              type={facing === "back" ? "back" : "front"}
-              onBarCodeScanned={handleBarCodeScanned}
-              style={StyleSheet.absoluteFillObject}
-            />
-          )}
+        
           <SafeAreaView style={styles.backButtonContainer}>
             <TouchableOpacity
               onPress={() => {
@@ -68,7 +63,7 @@ const QRScanner: FC<Props> = ({ navigation }) => {
               <Ionicons name="chevron-back-outline" size={35} color={"white"} />
             </TouchableOpacity>
           </SafeAreaView>
-        </View>
+        
       </ForceTouchGestureHandler>
       <ConfirmModal
         data={data}

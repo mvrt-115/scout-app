@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { ScrollView, Text, Alert, View, TouchableOpacity } from 'react-native';
-import { auth, db } from '../firebase';
+//import { auth, db } from '../firebase';
+import { db } from '../firebase';
 import { Button, IndexPath, Input, Select, SelectItem, Spinner, Toggle } from '@ui-kitten/components';
 import { usePitScout } from "../Stores";
 import Counter from "./Counter";
@@ -208,7 +209,8 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
     }
 
     const isLoggedIn = (): boolean => {
-        return auth.currentUser != null;
+        //return auth.currentUser != null;
+        return true;
     }
 
     const handlePictureCapture = (data: any) => {

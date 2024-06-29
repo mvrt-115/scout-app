@@ -20,7 +20,8 @@ import {
     NavigationParams,
 } from "react-navigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { db, auth } from '../firebase'
+//import { db, auth } from '../firebase'
+import { db } from '../firebase'
 import Toast from "react-native-toast-message";
 import { Navigate } from 'react-router-dom';
 
@@ -48,7 +49,8 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
     const setPostGameFields = usePostGame((state) => state.setPostGameFields);
 
     const isLoggedIn = () => {
-        return auth.currentUser != null;
+        //return auth.currentUser != null;
+        return true;
     }
 
     const dataType = (field: any) => {

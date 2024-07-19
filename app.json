@@ -6,7 +6,10 @@
     "slug": "scout-app",
     "ios": {
       "bundleIdentifier": "com.mvrt.scout",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "UIViewControllerBasedStatusBarAppearance": true
+      }
     },
     "android": {
       "package": "com.mvrt.scout",

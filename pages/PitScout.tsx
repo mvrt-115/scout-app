@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "react-native-screens/native-stack";
+import {createNativeStackNavigator} from "@react-navigation/native-stack"
 import PitScoutForm from '../components/PitScoutForm';
 import PitScoutCamera from '../components/PitScoutCamera';
 import { Button } from '@ui-kitten/components';

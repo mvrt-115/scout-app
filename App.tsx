@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "react-native-screens/native-stack";
+import {createNativeStackNavigator} from "@react-navigation/native-stack"
 import { ApplicationProvider } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
 import Home from "./pages/Home";

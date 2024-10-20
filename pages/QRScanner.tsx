@@ -1,7 +1,5 @@
-//adjust as per documention/changelogs
 import { Button, Modal, Card, Text } from "@ui-kitten/components";
-//import { BarCodeScanner } from "expo-barcode-scanner";
-import {Camera, CameraView} from "expo-camera";
+import { Camera } from "expo-camera";
 import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, View, Vibration, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -44,9 +42,16 @@ const QRScanner: FC<Props> = ({ navigation }) => {
       setScanning(true);
     })();
   }, []);
-
+  if (!hasPermission) {
+    return <Text>No access to camera.</Text>;
+  }
   return (
     <>
+    <Camera
+      style={{ flex: 1 }}
+      type={"back"}
+      onBarCodeScanned={scanning ? handleBarCodeScanned : undefined}
+    />
       <ForceTouchGestureHandler
         minForce={0.8}
         onHandlerStateChange={() => {

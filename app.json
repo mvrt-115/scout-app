@@ -16,7 +16,13 @@
       "versionCode": 1
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow MVRT Scout App to access your camera."
+        }
+      ]
     ]
   }
 }

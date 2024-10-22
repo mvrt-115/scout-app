@@ -1,5 +1,5 @@
 import { Button, Modal, Card, Text } from "@ui-kitten/components";
-import { Camera } from "expo-camera";
+import { Camera, CameraView } from "expo-camera";
 import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, View, Vibration, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -47,10 +47,12 @@ const QRScanner: FC<Props> = ({ navigation }) => {
   }
   return (
     <>
-    <Camera
+    <CameraView
       style={{ flex: 1 }}
-      type={"back"}
-      onBarCodeScanned={scanning ? handleBarCodeScanned : undefined}
+      barcodeScannerSettings={{
+        barcodeTypes: ["qr"],
+      }}
+      onBarcodeScanned={scanning ? handleBarCodeScanned : undefined}
     />
       <ForceTouchGestureHandler
         minForce={0.8}

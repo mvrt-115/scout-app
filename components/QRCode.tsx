@@ -71,7 +71,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
     const pushData = async () => {
         const data = getData();
         let autonFields: any[] = [], teleopFields: any[] = [], endGameFields: any[] = [];
-        const scoutingDocs = db.collection('years').doc('2024').collection('scouting');
+        const scoutingDocs = db.collection('years').doc(new Date().getFullYear() + "").collection('scouting');
         await scoutingDocs.doc('auton').get().then((autonData) => {
             autonFields = Object.values(autonData.data()?.autonFields || {}).map((field: any) => dataType(field));
         });

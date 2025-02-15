@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; 
 
 // keyboard avoiding view
 import { KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Keyboard} from 'react-native';

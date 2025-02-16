@@ -40,12 +40,12 @@ export default function App() {
             <Stack.Screen
               options={{ headerShown: false }}
               name="Login"
-              component={Login}
+              component={(props) => <Login {...props} />}
             />
             <Stack.Screen
               options={{ headerShown: false }}
               name="Match"
-              component={Match}
+              component={(props) => <Match {...props} />}
             />
             <Stack.Screen
               name="PitScout"

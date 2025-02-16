@@ -1,7 +1,9 @@
 import React, { FC, useEffect, useState } from "react";
 import { ScrollView, Text, Alert, View, TouchableOpacity } from 'react-native';
-//import { auth, db } from '../firebase';
-import { db } from '../firebase';
+
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, dbCurYear } from '../firebase';
+// import { db } from '../firebase';
 import { Button, IndexPath, Input, Select, SelectItem, Spinner, Toggle } from '@ui-kitten/components';
 import { usePitScout } from "../Stores";
 import Counter from "./Counter";
@@ -60,76 +62,67 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
     })
     const initalizePitScoutFields = async () => {
         const prompts: any[] = []
-        await db
-            .collection('years')
-            .doc(`${new Date().getFullYear()}`)
-            .collection('scouting')
-            .doc('pitScouting').get().then((data) => {
-                let arr = data.data()?.pitScoutingQuestions;
-                arr.forEach((field: object | string, index: number) => {
-                    if (typeof field === 'object') {
-                        let key: string = Object.keys(field)[0];
-                        let data = {
-                            "name": key,
-                            "value": field[key],
-                            "selected": field[key][0]
-                        }
-                        prompts.push(data);
-                    } else {
-                        const [name, type] = field.trim().split(":");
-                        if (type.trim() === 'boolean') {
-                            let data = {
-                                "name": name.trim(),
-                                "value": false
-                            }
-                            prompts.push(data);
-                        } else if (type.trim() === 'counter') {
-                            let data = {
-                                "name": name.trim(),
-                                "value": 0
-                            }
-                            prompts.push(data);
-                        } else {
-                            let data = {
-                                "name": name.trim(),
-                                "value": ''
-                            }
-                            prompts.push(data);
-                        }
+        let pitScoutingDoc = doc(dbCurYear, '2025/scouting/pitScouting');
+        let data = await getDoc(pitScoutingDoc);
+        //getDoc(pitScoutingDoc).then((result) => console.log(result));
+
+        let arr = data.data()?.pitScoutingQuestions;
+        arr.forEach((field: object | string, index: number) => {
+            if (typeof field === 'object') {
+                let key: string = Object.keys(field)[0];
+                let data = {
+                    "name": key,
+                    "value": field[key],
+                    "selected": field[key][0]
+                }
+                prompts.push(data);
+            } else {
+                const [name, type] = field.trim().split(":");
+                if (type.trim() === 'boolean') {
+                    let data = {
+                        "name": name.trim(),
+                        "value": false
                     }
-                });
-            });
+                    prompts.push(data);
+                } else if (type.trim() === 'counter') {
+                    let data = {
+                        "name": name.trim(),
+                        "value": 0
+                    }
+                    prompts.push(data);
+                } else {
+                    let data = {
+                        "name": name.trim(),
+                        "value": ''
+                    }
+                    prompts.push(data);
+                }
+            }
+        });
         setHasData(false);
         return prompts;
     }
 
     const getRegionals = async () => {
-        const year = new Date().getFullYear();
-        let regionals: any[] = [];
-        await db
-            .collection('years')
-            .doc(`${year}`)
-            .collection('regionals')
-            .get()
-            .then((data) => {
-                data.docs.forEach((doc) => {
-                    regionals.push(doc.id);
-                })
-            });
+        const regionals: any[] = []
+        let pitScoutingDoc = doc(dbCurYear, '2025/regionals');
+        let data = await getDoc(pitScoutingDoc);
+        let arr = data.data()?.regionals;
+        arr.forEach((doc) => {
+            regionals.push(doc.id);
+        })
         return regionals;
     }
 
     const getTeams = async () => {
         const prompts: any[] = []
-        await db
-            .collection('years')
-            .doc(year+'')
-            .collection('regionals')
-            .doc(regional)
-            .collection('teamChecklist').doc("teams").get().then((data) => {
-                let arr: any = data.data();
-                arr = Object.entries(arr);
-                arr?.map((field, index: number) => {
+        let pitScoutingDoc = doc(dbCurYear, '2025/regionals');
+        let data = await getDoc(pitScoutingDoc);
+        let arr = data.data()?.regionals
+        arr.doc("teams").get().then((data) => {
+                let arr1: any = data.data();
+                arr1 = Object.entries(arr1);
+                arr1?.map((field, index: number) => {
                     let data = {
                         name: field[0],
                         value: field[1],
@@ -209,7 +202,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
     }
 
     const isLoggedIn = (): boolean => {
-        //return auth.currentUser != null;
+        return auth.currentUser != null;
         return true;
     }
 

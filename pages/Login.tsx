@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-import { db, auth } from "../firebase";
+import { db } from "../firebase"; //old one was import { db, auth } from "../firebase";
 import Toast from "react-native-toast-message";
 import { Input } from "@ui-kitten/components";
 
@@ -32,8 +32,11 @@ interface MatchProps {
 const Login: FC<MatchProps> = ({ route, navigation }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
+  
+  
   const handleLogin = () => {
+    console.log("test  without auth");
+    /*
     auth
       .signInWithEmailAndPassword(email, password)
       .then(() => {
@@ -53,7 +56,10 @@ const Login: FC<MatchProps> = ({ route, navigation }) => {
         else if (error.code === "auth/wrong-password")
           Toast.show({type: 'error', text1: "Invalid Password"});
       });
+      */
   };
+  
+
   return (
     <>
     <Toast position="bottom" bottomOffset={20}/>

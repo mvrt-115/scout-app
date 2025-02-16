@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { ScrollView, Text, Alert, View, TouchableOpacity } from 'react-native';
 
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { auth, dbCurYear } from '../firebase';
 // import { db } from '../firebase';
 import { Button, IndexPath, Input, Select, SelectItem, Spinner, Toggle } from '@ui-kitten/components';
@@ -20,8 +20,8 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
 
     const pitScoutFields = usePitScout((state) => state.pitScoutFields);
     const setPitScoutFields = usePitScout((state) => state.setPitScoutFields);
-    const [regionals, setRegionals] = useState<string[]>(['cave']);
-    const [regional, setRegional] = useState<string>('cave');
+    const [regionals, setRegionals] = useState<string[]>(['camb']);
+    const [regional, setRegional] = useState<string>('camb');
     const year = new Date().getFullYear();
    // const [teamNum, setTeamNum] = useState<number>();
     const [hasData, setHasData] = useState<boolean>(false);
@@ -105,15 +105,40 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
 
     const getRegionals = async () => {
         const regionals: any[] = []
-        let pitScoutingDoc = doc(dbCurYear, '2025/regionals');
+        /*
+        let regionalsCollection = collection(dbCurYear, 'years', '2025', 'regionals');
         let data = await getDoc(pitScoutingDoc);
         let arr = data.data()?.regionals;
         arr.forEach((doc) => {
             regionals.push(doc.id);
         })
         return regionals;
+        */
+        let regionalsCollection = collection(dbCurYear, '2025/regionals');
+        let data = await getDocs(regionalsCollection);
+        data.forEach(docSnap => {
+            regionals.push(docSnap.id);
+        });
+        
+        return regionals;
     }
 
+    const getTeams = async () => {
+        const prompts: any[] = [];
+        let teamsCollection = collection(dbCurYear, '2025/regionals/regional/teams');
+        let data = await getDocs(teamsCollection);
+        data.forEach((docSnap) => {
+          let docData = docSnap.data();
+          Object.entries(docData).forEach(([key, value]) => {
+            prompts.push({ name: key, value });
+          });
+        });
+        
+        //setHasData(false); not sure if needed as it was there from last year
+        return prompts;
+      };
+
+    /*
     const getTeams = async () => {
         const prompts: any[] = []
         let pitScoutingDoc = doc(dbCurYear, '2025/regionals');
@@ -133,6 +158,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
         setHasData(false);
         return prompts;
     }
+    */
     const pushData = async () => {
         // if (team && isNaN(Number(team))) {
         //     Alert.alert('Enter valid team number');

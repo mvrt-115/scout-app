@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { ScrollView, Text, Alert, View, SafeAreaView, TouchableOpacity } from 'react-native';
-//import { auth, db } from '../firebase';
-import { db } from '../firebase';
+import { addDoc, collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { auth, dbCurYear } from '../firebase';
 import { Button, IndexPath, Input, Select, SelectItem, Spinner, Toggle } from '@ui-kitten/components';
 import { usePitScout } from "../Stores";
 import Counter from "./Counter";
@@ -12,6 +12,10 @@ import { Ionicons } from "@expo/vector-icons";
 interface CommentProps {
     navigation: any,
 }
+interface Team {
+    name: string;
+    value: boolean;
+  }
 
 const Comment: FC<CommentProps> = ({ navigation }) => {
 
@@ -19,7 +23,7 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
     const [regional, setRegional] = useState<string>('cc');
     const [hasData, setHasData] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
-    const [teams, setTeams] = useState<Object[]>([{name: '', value: false}]);
+    const [teams, setTeams] = useState<Team[]>([{name: '', value: false}]);
     const [team, setTeam] = useState<string>('115');
     const [comment, setComment] = useState("");
     const [match, setMatch] = useState("");
@@ -37,42 +41,39 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
 
 
     const getRegionals = async () => {
-        const year = new Date().getFullYear();
-        let regionals: any[] = [];
-        await db
-            .collection('years')
-            .doc(`${year}`)
-            .collection('regionals')
-            .get()
-            .then((data) => {
-                data.docs.forEach((doc) => {
-                    regionals.push(doc.id);
-                })
+            const regionals: any[] = []
+            /*
+            let regionalsCollection = collection(dbCurYear, 'years', '2025', 'regionals');
+            let data = await getDoc(pitScoutingDoc);
+            let arr = data.data()?.regionals;
+            arr.forEach((doc) => {
+                regionals.push(doc.id);
+            })
+            return regionals;
+            */
+            let regionalsCollection = collection(dbCurYear, '2025', 'regionals');
+            let data = await getDocs(regionalsCollection);
+            data.forEach(docSnap => {
+                regionals.push(docSnap.id);
             });
-        return regionals;
-    }
+            
+            return regionals;
+        }
 
     const getTeams = async () => {
-        const prompts: any[] = []
-        await db
-            .collection('years')
-            .doc(year+'')
-            .collection('regionals')
-            .doc(regional)
-            .collection('teamChecklist').doc("teams").get().then((data) => {
-                let arr: any = data.data();
-                arr = Object.entries(arr);
-                arr?.map((field, index: number) => {
-                    let data = {
-                        name: field[0],
-                        value: field[1],
-                    } 
-                    {prompts.push(data)}
-                });
+        const prompts: any[] = [];
+        let teamsCollection = collection(dbCurYear, '2025', 'regionals', regional, 'teams');
+        let data = await getDocs(teamsCollection);
+        data.forEach((docSnap) => {
+            let docData = docSnap.data();
+            Object.entries(docData).forEach(([key, value]) => {
+                prompts.push({ name: key, value });
             });
-        setHasData(false);
+        });
+        
+        //setHasData(false); not sure if needed as it was there from last year
         return prompts;
-    }
+    };
 
     const pushData = async () => {
         const val = {
@@ -80,13 +81,16 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
             'match': match,
         }
         Alert.alert(JSON.stringify(val));
-        db
-            .collection('years')
-            .doc(`${new Date().getFullYear()}`)
-            .collection('regionals')
-            .doc(regional)
-            .collection('teams')
-            .doc(`${team}`).collection('comments').add(val).then(() => {
+        addDoc(
+            collection(
+              dbCurYear,
+              '2025',
+              'regionals',
+              regional,
+              'teams',
+              team,
+              'comments'
+            ), val).then(() => {
                 Toast.show({
                     type: 'success',
                     text1: 'Successfully saved data!'
@@ -98,12 +102,10 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
                     text1: err.message
                 })
             });;
-
     }
 
     const isLoggedIn = (): boolean => {
-        //return auth.currentUser != null;
-        return true;
+        return auth.currentUser != null;
     }
 
     return (!loading ?
@@ -147,10 +149,13 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
                     {regionals.map(r => <SelectItem title={r} />)}
                 </Select>
                 <Select
-                    selectedIndex={new IndexPath(teams.indexOf(team || ''))}
+                    selectedIndex={new IndexPath(
+                        Math.max(teams.findIndex((t) => t.name === team), 0)
+                    )}
                     label={'Select Team'}
                     onSelect={(currIndex) => {
-                        setTeam(teams[parseInt(currIndex.toString()) - 1].name);
+                        const i = parseInt(currIndex.toString()) - 1;
+                        setTeam(teams[i].name);
                     }}
                     placeholder="Select Team"
                     style={{ marginBottom: '4%' }}
@@ -210,5 +215,4 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
         
     );
 }
-
 export default Comment;

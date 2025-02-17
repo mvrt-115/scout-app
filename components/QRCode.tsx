@@ -1,4 +1,5 @@
 import BottomSheet from "@gorhom/bottom-sheet";
+import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import React, {
     FC,
     RefObject,
@@ -21,7 +22,7 @@ import {
 } from "react-navigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 //import { db, auth } from '../firebase'
-import { db } from '../firebase'
+import { db, dbCurYear } from '../firebase'
 import Toast from "react-native-toast-message";
 import { Navigate } from 'react-router-dom';
 
@@ -71,16 +72,41 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
     const pushData = async () => {
         const data = getData();
         let autonFields: any[] = [], teleopFields: any[] = [], endGameFields: any[] = [];
-        const scoutingDocs = db.collection('years').doc(new Date().getFullYear() + "").collection('scouting');
-        await scoutingDocs.doc('auton').get().then((autonData) => {
-            autonFields = Object.values(autonData.data()?.autonFields || {}).map((field: any) => dataType(field));
+        //const scoutingDocs = db.collection('years').doc(new Date().getFullYear() + "").collection('scouting');
+        let scoutingDocs = collection(
+            dbCurYear, 
+            '2025', 
+            'scouting'
+          );
+        // await scoutingDocs.doc('auton').get().then((autonData) => {
+        //     autonFields = Object.values(autonData.data()?.autonFields || {}).map((field: any) => dataType(field));
+        // });
+        // await scoutingDocs.doc('endgame').get().then((endgameData) => {
+        //     endGameFields = Object.values(endgameData.data()?.endgameFields || {}).map((field: any) => dataType(field));
+        // })
+        // await scoutingDocs.doc('teleop').get().then((teleopData) => {
+        //     teleopFields = Object.values(teleopData.data()?.teleopFields || {}).map((field: any) => dataType(field));
+        // })
+        await getDoc(doc(scoutingDocs, 'auton'))
+        .then((autonData) => {
+        autonFields = Object
+            .values(autonData.data()?.autonFields || {})
+            .map((field: any) => dataType(field));
         });
-        await scoutingDocs.doc('endgame').get().then((endgameData) => {
-            endGameFields = Object.values(endgameData.data()?.endgameFields || {}).map((field: any) => dataType(field));
-        })
-        await scoutingDocs.doc('teleop').get().then((teleopData) => {
-            teleopFields = Object.values(teleopData.data()?.teleopFields || {}).map((field: any) => dataType(field));
-        })
+
+        await getDoc(doc(scoutingDocs, 'endgame'))
+            .then((endgameData) => {
+            endGameFields = Object
+                .values(endgameData.data()?.endgameFields || {})
+                .map((field: any) => dataType(field));
+            });
+
+        await getDoc(doc(scoutingDocs, 'teleop'))
+            .then((teleopData) => {
+            teleopFields = Object
+                .values(teleopData.data()?.teleopFields || {})
+                .map((field: any) => dataType(field));
+            });
         let pushingData = {};
         autonFields.forEach((field, index) => {
             pushingData[field['name']] = data.autonFields[index];
@@ -92,8 +118,9 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
             pushingData[field['name']] = data.postGameFields[index];
         });
         pushingData['matchNum'] = preGameState.matchNum;
-        await db.collection('years').doc('2024').collection('regionals').doc(preGameState.regional)
-            .collection("teams").doc(data.teamNum + "").collection("matches").doc(preGameState.matchNum + '').set(pushingData);
+        // await db.collection('years').doc('2024').collection('regionals').doc(preGameState.regional)
+        //     .collection("teams").doc(data.teamNum + "").collection("matches").doc(preGameState.matchNum + '').set(pushingData);
+        await setDoc(doc(dbCurYear, '2025', 'regionals', preGameState.regional, 'teams', data.teamNum + "", 'matches', preGameState.matchNum + ""), pushingData);
         Toast.show({ type: 'success', text1: 'Successfully saved data!' });
         setTimeout(() => {
             navigation?.navigate("Home");

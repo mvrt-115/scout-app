@@ -1,9 +1,8 @@
 import React, { FC, useEffect, useState } from "react";
 import { ScrollView, Text, Alert, View, TouchableOpacity } from 'react-native';
 
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
-import { auth, dbCurYear } from '../firebase';
-// import { db } from '../firebase';
+import { collection, doc, getDoc, getDocs, Index, setDoc } from 'firebase/firestore';
+import { db, auth, dbCurYear } from '../firebase';
 import { Button, IndexPath, Input, Select, SelectItem, Spinner, Toggle } from '@ui-kitten/components';
 import { usePitScout } from "../Stores";
 import Counter from "./Counter";
@@ -27,7 +26,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
     const [hasData, setHasData] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [image, setImage] = useState<string>('');
-    const [levels, setLevels] = React.useState([
+    const [levels, setLevels] = React.useState<IndexPath[]>([
         new IndexPath(0),
         new IndexPath(-1),
         new IndexPath(-1),
@@ -114,7 +113,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
         })
         return regionals;
         */
-        let regionalsCollection = collection(dbCurYear, '2025/regionals');
+        let regionalsCollection = collection(dbCurYear, '2025', 'regionals');
         let data = await getDocs(regionalsCollection);
         data.forEach(docSnap => {
             regionals.push(docSnap.id);
@@ -125,7 +124,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
 
     const getTeams = async () => {
         const prompts: any[] = [];
-        let teamsCollection = collection(dbCurYear, '2025/regionals/regional/teams');
+        let teamsCollection = collection(dbCurYear, '2025', 'regionals', regional, 'teams');
         let data = await getDocs(teamsCollection);
         data.forEach((docSnap) => {
           let docData = docSnap.data();
@@ -134,7 +133,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
           });
         });
         
-        //setHasData(false); not sure if needed as it was there from last year
+        setHasData(false); //not sure if needed as it was there from last year
         return prompts;
       };
 
@@ -179,6 +178,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
         temp.forEach((field) => {
             teamNew[field['name']] = field['value'];
         });
+        /*
         db
             .collection('years')
             .doc(`${new Date().getFullYear()}`)
@@ -200,27 +200,35 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                     text1: err.message
                 })
             });
-            
-            db
-            .collection('years')
-            .doc(year+'')
-            .collection('regionals')
-            .doc(regional)
-            .collection('teamChecklist').doc("teams")
-            .set(teamNew).then(() => {
-                Toast.show({
-                    type: 'success',
-                    text1: 'Successfully saved data!'
-                });
-                setFinishTeam(true);
-                navigation?.goBack();
-            }).catch((err) => {
-                Toast.show({
-                    type: 'error',
-                    text1: err.message
-                })
+        */
+        setDoc(doc(dbCurYear, '2025', 'regionals', regional, 'teams', team, 'pitScoutData', 'pitScoutAnswers'), answers).then(() => {
+            Toast.show({
+                type: 'success',
+                text1: 'Successfully saved data!'
             });
-
+            clearData();
+        })
+        .catch((err) => {
+            Toast.show({
+                type: 'error',
+                text1: err.message
+            });
+        });
+    
+        setDoc(doc(dbCurYear, '2025', 'regionals', regional, 'teams'), teamNew).then(() => {
+            Toast.show({
+                type: 'success',
+                text1: 'Successfully saved data!'
+            });
+            setFinishTeam(true);
+            navigation?.goBack();
+        })
+        .catch((err) => {
+            Toast.show({
+            type: 'error',
+            text1: err.message
+            });
+        });
     }
 
     const clearData = async () => {
@@ -297,17 +305,26 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                               });
                             return(
                                 <>
-                                {levels.map((index)=>{<Text> {index.row} </Text>})}
+                                {levels.map((idx) => (
+                                    <Text key={idx.row}>
+                                    Index row: {idx.row}
+                                    </Text>
+                                ))}
                                 <Select
                                 multiSelect={true}
                                 selectedIndex={levels}
                                 onSelect={(currIndex) => {
+                                    if (!Array.isArray(currIndex)) 
+                                        return;
                                     setLevels(currIndex);
                                     const temp: any[] = [...pitScoutFields];
                                     const currLevel = temp[index];
+                                    /*
                                     const newLevelsValues = currIndex.map((indexpath, index) => {
                                         return field['value'][indexpath.row];
                                       });
+                                    */
+                                    const newLevelsValues = currIndex.map((ip) => field['value'][ip.row]);
                                     const newField = {
                                         "name": field['name'],
                                         "value": field['value'],
@@ -317,13 +334,13 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                                     setPitScoutFields(temp);
                                     setHasData(true);
                                 }}
-                              value={levelsValues.join(' ')}
                               label={field['name'].substring(0, field['name'].indexOf(':'))}
                               style={{ marginBottom: "3%" }}
+                              value={levels.map(ip => field['value'][ip.row]).join(' ')}
                             >
-                                {field['value'].map((val: any) => {
-                                    return <SelectItem title={val} />
-                                })}
+                                {field['value'].map((val: any) => (
+                                    <SelectItem title={val} key={val} />
+                                ))}
                             </Select>
                                 </>
                             )

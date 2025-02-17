@@ -10,7 +10,8 @@ import EndGame from "../components/Endgame";
 import { Alert } from 'react-native';
 import { NavigationScreenProp, NavigationParams } from "react-navigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { db } from "../firebase";
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { db, auth, dbCurYear } from '../firebase';
 
 
 const Tab = createBottomTabNavigator();
@@ -86,14 +87,41 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
     }
 
     const hardCode = () =>{
-        const autonStuff = ["Mobility: boolean", "Auton Upper Cone: counter", "Auton Upper Cone Missed: counter", "Auton Mid Cone: counter", "Auton Mid Cone Missed: counter", "Auton Lower Cone: counter", "Auton Lower Cone Missed: counter", "Auton Upper Cube: counter", "Auton Upper Cube Missed: counter", "Auton Mid Cube: counter", "Auton Mid Cube Missed: counter", "Auton Lower Cube: counter", "Auton Lower Cube Missed: counter", "Auton Did Charge: boolean", "Auton Docked: boolean", "Auton Engaged: boolean", "Auton Charge Time: timer"]
+        const autonStuff = ["Auton Coral Level 1 Scored: counter", "Auton Coral Level 1 Missed: counter", "Auton Coral Level 2 Scored: counter", 
+            "Auton Coral Level 2 Missed: counter", "Auton Coral Level 3 Scored: counter", "Auton Coral Level 3 Missed: counter", 
+            "Auton Coral Level 4 Scored: counter", "Auton Coral Level 4 Missed: counter", "Auton Algae Processor Scored: counter", 
+            "Auton Algae Processor Missed: counter", "Auton Algae Net Scored: counter", "Auton Algae Net Missed: counter", 
+            "Mobility: boolean"]
         setAutonFields(autonStuff.map((field: any) => getData(field)));
-        const teleopStuff = ["Teleop Upper Cone: counter", "Teleop Upper Cone Missed: counter", "Teleop Mid Cone: counter", "Teleop Mid Cone Missed: counter", "Teleop Lower Cone: counter", "Teleop Lower Cone Missed: counter", "Teleop Upper Cube: counter", "Teleop Upper Cube Missed: counter", "Teleop Mid Cube: counter", "Teleop Mid Cube Missed: counter", "Teleop Lower Cube: counter", "Teleop Lower Cube Missed: counter", "Played Defense: boolean"]
+        const teleopStuff = ["Teleop Coral Level 1 Scored: counter", "Teleop Coral Level 1 Missed: counter", "Teleop Coral Level 2 Scored: counter", 
+            "Teleop Coral Level 2 Missed: counter", "Teleop Coral Level 3 Scored: counter", "Teleop Coral Level 3 Missed: counter", 
+            "Teleop Coral Level 4 Scored: counter", "Teleop Coral Level 4 Missed: counter", "Teleop Algae Processor Scored: counter", 
+            "Teleop Algae Processor Missed: counter", "Teleop Algae Net Scored: counter", "Teleop Algae Net Missed: counter", 
+            "Played Defense: boolean"]
         setTeleopFields(teleopStuff.map((field: any) => getData(field)));
-        const endgameStuff = ["Parked: boolean", "Endgame Did Charge: boolean", "Endgame Docked: boolean", "Endgame Engaged: boolean", "Tipped: boolean", "Comments: text"]
+        const endgameStuff = ["Did Climb: boolean", "Climb Time: timer", {"Climb Level": ["None", "Shallow", "Deep"]}, 
+            "Recieved Auton RP: boolean", "Recieved Coral RP: boolean", "Recieved Coopertition RP: boolean", 
+            "Recieved Barge RP: boolean", "Drive Rating: rating", "Comments: text"]
         setEndGameFields(endgameStuff.map((field: any) => getData(field)));
     }
     const fetchData = async () => {
+        let scoutingCollection = collection(dbCurYear, '2025', 'scouting');
+        let autonDocRef = doc(scoutingCollection, 'auton');
+        let autonSnap = await getDoc(autonDocRef);
+        setAutonFields(
+            Object.values(autonSnap.data()?.autonFields || {}).map((field: any) => getData(field))
+        );
+        let endgameDocRef = doc(scoutingCollection, 'endgame');
+        let endgameSnap = await getDoc(endgameDocRef);
+        setEndGameFields(
+            Object.values(endgameSnap.data()?.endgameFields || {}).map((field: any) => getData(field))
+        );
+        let teleopDocRef = doc(scoutingCollection, 'teleop');
+        let teleopSnap = await getDoc(teleopDocRef);
+        setTeleopFields(
+            Object.values(teleopSnap.data()?.teleopFields || {}).map((field: any) => getData(field))
+        );
+        /*
         const scoutingDocs = db.collection('years').doc(`${new Date().getFullYear()}`).collection('scouting');
         await scoutingDocs.doc('auton').get().then((autonData) => {
             setAutonFields(Object.values(autonData.data()?.autonFields || {}).map((field: any) => getData(field)));
@@ -104,6 +132,7 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
         await scoutingDocs.doc('teleop').get().then((teleopFields) => {
             setTeleopFields(Object.values(teleopFields.data()?.teleopFields || {}).map((field: any) => getData(field)));
         });
+        */
     }
 
     const AutonComponent = useCallback(() => <Auton navigation={navigation} fields={autonFields ? autonFields : []} />, [autonFields]);
@@ -157,5 +186,4 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
 };
 
 export default Match;
-
 

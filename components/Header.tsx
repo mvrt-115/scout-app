@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Alert } from "react-native";
 import { Text } from "@ui-kitten/components";
 import { Ionicons } from "@expo/vector-icons";
 import QRCodeBottomSheet from "./QRCode";
-//import { auth } from '../firebase';
+import { auth } from '../firebase';
 import { Navigator } from 'react-router-dom';
 import Toast from "react-native-toast-message";
 import { NavigationParams, NavigationScreenProp, NavigationState } from "react-navigation";

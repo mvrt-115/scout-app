@@ -45,7 +45,8 @@
     "react-navigation": "^4.4.4",
     "react-router-dom": "^6.2.1",
     "yarn": "^1.22.18",
-    "zustand": "^3.5.7"
+    "zustand": "^3.5.7",
+    "@expo/metro-runtime": "~4.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

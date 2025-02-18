@@ -61,7 +61,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
     })
     const initalizePitScoutFields = async () => {
         const prompts: any[] = []
-        let pitScoutingDoc = doc(dbCurYear, '2025/scouting/pitScouting');
+        let pitScoutingDoc = doc(dbCurYear, '2025', 'scouting', 'pitScouting');
         let data = await getDoc(pitScoutingDoc);
         //getDoc(pitScoutingDoc).then((result) => console.log(result));
 
@@ -126,12 +126,15 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
         const prompts: any[] = [];
         let teamsCollection = collection(dbCurYear, '2025', 'regionals', regional, 'teams');
         let data = await getDocs(teamsCollection);
-        data.forEach((docSnap) => {
-          let docData = docSnap.data();
-          Object.entries(docData).forEach(([key, value]) => {
-            prompts.push({ name: key, value });
+        // data.forEach((docSnap) => {
+        //   let docData = docSnap.data();
+        //   Object.entries(docData).forEach(([key, value]) => {
+        //     prompts.push({ name: key, value });
+        //   });
+        // });
+        data.forEach(docSnap => {
+            prompts.push({ name: docSnap.id, value: docSnap.data()?.value ?? false });
           });
-        });
         
         setHasData(false); //not sure if needed as it was there from last year
         return prompts;
@@ -492,7 +495,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                         }
                     }}
                 >
-                    Take Photo!
+                    Take Photo! (don't use rn)
                 </Button>
                 <Button
                     status="danger"

@@ -1,4 +1,5 @@
 import BottomSheet from "@gorhom/bottom-sheet";
+import { auth } from '../firebase';
 import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import React, {
     FC,
@@ -37,7 +38,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
     sheetRef,
     navigation,
 }) => {
-    const snapPoints = useMemo(() => [1, "75%"], []);
+    const snapPoints = useMemo(() => ["75%"], []);
 
     const [showQR, setShowQR] = useState<boolean>(false);
     const [login, setLogin] = useState<boolean>(false);
@@ -50,7 +51,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
     const setPostGameFields = usePostGame((state) => state.setPostGameFields);
 
     const isLoggedIn = () => {
-        //return auth.currentUser != null;
+        return auth.currentUser != null;
         return true;
     }
 
@@ -128,8 +129,10 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
         }, 2000);
     }
     const handleSheetChanges = useCallback((index: number) => {
-        if (index === 0) setShowQR(false);
-        else setShowQR(true);
+        if (index === 0) 
+            setShowQR(true);
+        else 
+            setShowQR(false);
     }, []);
 
     const clearData = () => {
@@ -172,7 +175,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
             <Toast position='top' topOffset={20} />
             <BottomSheet
                 ref={sheetRef}
-                index={0}
+                index={-1}
                 animateOnMount={false}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}

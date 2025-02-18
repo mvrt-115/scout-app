@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
 import { ScrollView, Text, Alert, View, TouchableOpacity } from 'react-native';
-
 import { collection, doc, getDoc, getDocs, Index, setDoc } from 'firebase/firestore';
 import { db, auth, dbCurYear } from '../firebase';
 import { Button, IndexPath, Input, Select, SelectItem, Spinner, Toggle } from '@ui-kitten/components';

@@ -19,8 +19,8 @@ interface Team {
 
 const Comment: FC<CommentProps> = ({ navigation }) => {
 
-    const [regionals, setRegionals] = useState<string[]>(['cc']);
-    const [regional, setRegional] = useState<string>('cc');
+    const [regionals, setRegionals] = useState<string[]>(['camb']);
+    const [regional, setRegional] = useState<string>('camb');
     const [hasData, setHasData] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [teams, setTeams] = useState<Team[]>([{name: '', value: false}]);
@@ -64,14 +64,17 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
         const prompts: any[] = [];
         let teamsCollection = collection(dbCurYear, '2025', 'regionals', regional, 'teams');
         let data = await getDocs(teamsCollection);
-        data.forEach((docSnap) => {
-            let docData = docSnap.data();
-            Object.entries(docData).forEach(([key, value]) => {
-                prompts.push({ name: key, value });
-            });
+        // data.forEach((docSnap) => {
+        //     let docData = docSnap.data();
+        //     Object.entries(docData).forEach(([key, value]) => {
+        //         prompts.push({ name: key, value });
+        //     });
+        // });
+        data.forEach(docSnap => {
+            prompts.push({ name: docSnap.id, value: docSnap.data()?.value ?? false });
         });
         
-        //setHasData(false); not sure if needed as it was there from last year
+        setHasData(false);
         return prompts;
     };
 

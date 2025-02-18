@@ -22,7 +22,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
     const [regionals, setRegionals] = useState<string[]>(['camb']);
     const [regional, setRegional] = useState<string>('camb');
     const year = new Date().getFullYear();
-   // const [teamNum, setTeamNum] = useState<number>();
+    const [teamNum, setTeamNum] = useState<number>();
     const [hasData, setHasData] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [image, setImage] = useState<string>('');
@@ -134,9 +134,9 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
         // });
         data.forEach(docSnap => {
             prompts.push({ name: docSnap.id, value: docSnap.data()?.value ?? false });
-          });
+        });
         
-        setHasData(false); //not sure if needed as it was there from last year
+        setHasData(false);
         return prompts;
       };
 

@@ -12,9 +12,10 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-import { db } from "../firebase"; //old one was import { db, auth } from "../firebase";
+import { dbCurYear, auth } from "../firebase";
 import Toast from "react-native-toast-message";
 import { Input } from "@ui-kitten/components";
+import { signInWithEmailAndPassword} from 'firebase/auth';
 
 const Tab = createBottomTabNavigator();
 
@@ -35,10 +36,8 @@ const Login: FC<MatchProps> = ({ route, navigation }) => {
   
   
   const handleLogin = () => {
-    console.log("test  without auth");
-    /*
-    auth
-      .signInWithEmailAndPassword(email, password)
+    //console.log("test without auth");
+    signInWithEmailAndPassword(auth, email, password)
       .then(() => {
         navigation.goBack();
         Toast.show({
@@ -56,7 +55,6 @@ const Login: FC<MatchProps> = ({ route, navigation }) => {
         else if (error.code === "auth/wrong-password")
           Toast.show({type: 'error', text1: "Invalid Password"});
       });
-      */
   };
   
 

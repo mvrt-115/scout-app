@@ -12,7 +12,7 @@ import Login from "./pages/Login";
 import Match from "./pages/Match";
 import PitScout from './pages/PitScout';
 import Comment from "./components/Comment";
-//import { auth } from "./firebase";
+import { auth } from "./firebase";
 
 console.warn = () => { };
 console.log = () => { };

@@ -10,8 +10,9 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuton, usePostGame, usePreGame, useTeleop } from "../Stores";
 import { Navigate } from "react-router-dom";
-//import { auth } from '../firebase'
+import { auth } from '../firebase'
 import Toast from 'react-native-toast-message';
+import { onAuthStateChanged } from "firebase/auth";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
@@ -26,11 +27,11 @@ const Home: React.FC<Props> = ({ navigation }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    //("HOME");
-    // //auth.onAuthStateChanged(user => {
-    //   if (user) setIsLoggedIn(true);
-    //   else setIsLoggedIn(false);
-    // });
+    ("HOME");
+    onAuthStateChanged(auth, (user => {
+      if (user) setIsLoggedIn(true);
+      else setIsLoggedIn(false);
+    }));
     (async () => {
       try {
         const [pregameStr, autonStr, teleopStr, endgameStr] = await Promise.all(

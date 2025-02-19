@@ -24,12 +24,12 @@ const Header: FC<HeaderProps> = ({ title, matchInfo, toggleQRCode, navigation })
 
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const teamNum = usePreGame((state) => state.teamNum);
-  // useEffect(() => {
-  //   auth.onAuthStateChanged(user => {
-  //     if (user) setLoggedIn(true);
-  //     else setLoggedIn(false);
-  //   });
-  // }, [])
+  useEffect(() => {
+    auth.onAuthStateChanged(user => {
+      if (user) setLoggedIn(true);
+      else setLoggedIn(false);
+    });
+  }, [])
 
   return (
     <>

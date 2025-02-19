@@ -2,6 +2,7 @@ import React, { FC, useRef, useState, useEffect } from "react";
 import Header from "./Header";
 import { usePreGame } from "../Stores";
 import BottomSheet from "@gorhom/bottom-sheet";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import QRCodeBottomSheet from "./QRCode";
 import { ScrollView, View, Alert } from "react-native";
 import { IndexPath, Input, Select, SelectItem } from "@ui-kitten/components/ui";
@@ -39,7 +40,8 @@ const PreGame: FC<PreGameProps> = ({ navigation }) => {
   );
 
 
-  const sheetRef = useRef<BottomSheet>(null);
+  //const sheetRef = useRef<BottomSheet>(null);
+  const sheetRef = useRef<BottomSheetMethods>(null);
   return (
     <>
       <Header

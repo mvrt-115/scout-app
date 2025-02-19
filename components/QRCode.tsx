@@ -22,8 +22,7 @@ import {
     NavigationParams,
 } from "react-navigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-//import { db, auth } from '../firebase'
-import { db, dbCurYear } from '../firebase'
+import { dbCurYear } from '../firebase'
 import Toast from "react-native-toast-message";
 import { Navigate } from 'react-router-dom';
 
@@ -129,6 +128,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
         }, 2000);
     }
     const handleSheetChanges = useCallback((index: number) => {
+        console.log("BottomSheet index:", index);
         if (index === 0) 
             setShowQR(true);
         else 
@@ -195,12 +195,16 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
                     <Text style={{ marginBottom: 20 }}>
                         Scan this QR Code with the Super Scout Scanner
                     </Text>
-                    {showQR && (
+                    {/* {showQR && (
                         <QRCode
                             value={JSON.stringify(getData())}
                             size={Dimensions.get("screen").width / 1.3}
                         />
-                    )}
+                    )} */}
+                    <QRCode
+                        value={JSON.stringify(getData())}
+                        size={Dimensions.get("screen").width / 1.3}
+                    />
                     <View
                         style={{
                             flex: 1,

@@ -5,10 +5,11 @@ import React, {
     createContext,
     FC,
 } from 'react';
-import firebase, { auth } from '../firebase';
+import { auth } from '../firebase';
+import { signInWithEmailAndPassword, signOut, User, onAuthStateChanged, createUserWithEmailAndPassword } from 'firebase/auth';
 
 interface ValueData {
-    currentUser: firebase.User | null | undefined;
+    currentUser: User | null | undefined;
     login: (email: string, password: string) => any;
     logout: () => void;
     loggedIn: boolean;
@@ -28,24 +29,24 @@ const useAuth = () => {
 };
 
 const AuthProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState<firebase.User | null>();
+    const [currentUser, setCurrentUser] = useState<User | null>();
     const [loading, setLoading] = useState(true);
     const [loggedIn, setLoggedIn] = useState(false);
 
-    // const signup = (email: string, password: string) => {
-    //     return auth.createUserWithEmailAndPassword(email, password);
-    // };
+    const signup = (email: string, password: string) => {
+        return createUserWithEmailAndPassword(auth, email, password);
+    };
 
     const login = (email: string, password: string) => {
-        return auth.signInWithEmailAndPassword(email, password);
+        return signInWithEmailAndPassword(auth, email, password);
     };
 
     const logout = () => {
-        return auth.signOut();
+        return signOut(auth);
     };
 
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
             setLoading(false);
         });
@@ -58,7 +59,7 @@ const AuthProvider = ({ children }) => {
     const value = {
         currentUser,
         login,
-        // signup,
+        signup,
         logout,
         loggedIn,
     };

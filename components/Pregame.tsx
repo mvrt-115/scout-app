@@ -2,7 +2,6 @@ import React, { FC, useRef, useState, useEffect } from "react";
 import Header from "./Header";
 import { usePreGame } from "../Stores";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import QRCodeBottomSheet from "./QRCode";
 import { ScrollView, View, Alert } from "react-native";
 import { IndexPath, Input, Select, SelectItem } from "@ui-kitten/components/ui";
@@ -40,14 +39,14 @@ const PreGame: FC<PreGameProps> = ({ navigation }) => {
   );
 
 
-  //const sheetRef = useRef<BottomSheet>(null);
-  const sheetRef = useRef<BottomSheetMethods>(null);
+  const sheetRef = useRef<BottomSheet>(null);
   return (
     <>
       <Header
         matchInfo={{ teams, alliance, regional }}
         title={"PreGame"}
-        toggleQRCode={() => sheetRef.current?.snapToIndex(0)} //replaced from 1
+        //toggleQRCode={() => sheetRef.current?.snapToIndex(0)}
+        toggleQRCode={() => sheetRef.current?.snapToIndex(1)}
         navigation={navigation}
       />
 

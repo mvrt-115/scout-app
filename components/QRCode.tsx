@@ -37,7 +37,9 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
     sheetRef,
     navigation,
 }) => {
-    const snapPoints = useMemo(() => ["75%"], []);
+    //const snapPoints = useMemo(() => ["75%"], []);
+    const snapPoints = useMemo(() => [1, "75%"], []);
+
 
     const [showQR, setShowQR] = useState<boolean>(false);
     const [login, setLogin] = useState<boolean>(false);
@@ -48,6 +50,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
     const setAutonFields = useAuton((state) => state.setAutonFields);
     const setTeleopFields = useTeleop((state) => state.setTeleopFields);
     const setPostGameFields = usePostGame((state) => state.setPostGameFields);
+    const [qrcode, setQRCode] = useState("");
 
     const isLoggedIn = () => {
         return auth.currentUser != null;
@@ -70,10 +73,11 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
         }
     }
     const pushData = async () => {
+        //const data: MatchData = JSON.parse(getData());
         const data = getData();
         let autonFields: any[] = [], teleopFields: any[] = [], endGameFields: any[] = [];
         //const scoutingDocs = db.collection('years').doc(new Date().getFullYear() + "").collection('scouting');
-        let scoutingDocs = collection(
+        const scoutingDocs = collection(
             dbCurYear, 
             '2025', 
             'scouting'
@@ -129,10 +133,12 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
     }
     const handleSheetChanges = useCallback((index: number) => {
         console.log("BottomSheet index:", index);
-        if (index === 0) 
-            setShowQR(true);
-        else 
+        if (index == 0) {
+            //setQRCode(getData());
             setShowQR(false);
+        }
+        else 
+            setShowQR(true);
     }, []);
 
     const clearData = () => {
@@ -169,6 +175,21 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
             teams: preGameState.teams,
         };
     };
+    
+    // const getData = (): string => {
+    //     return JSON.stringify({
+    //       autonFields: autonState.autonFields,
+    //       postGameFields: postGameState.postGameFields,
+    //       teleopFields: teleopState.teleopFields,
+    //       alliance: preGameState.alliance,
+    //       matchNum: preGameState.matchNum,
+    //       minfo: preGameState.minfo,
+    //       regional: preGameState.regional,
+    //       teamNum: preGameState.teamNum,
+    //       teams: preGameState.teams,
+    //     });
+    // };
+      
 
     return (
         <>
@@ -195,16 +216,22 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
                     <Text style={{ marginBottom: 20 }}>
                         Scan this QR Code with the Super Scout Scanner
                     </Text>
-                    {/* {showQR && (
+                    {showQR && (
                         <QRCode
                             value={JSON.stringify(getData())}
                             size={Dimensions.get("screen").width / 1.3}
                         />
-                    )} */}
-                    <QRCode
+                    )}
+                    {/* <QRCode
                         value={JSON.stringify(getData())}
                         size={Dimensions.get("screen").width / 1.3}
-                    />
+                    /> */}
+                    {/* {qrcode !== "" && (
+                        <QRCode
+                            value={qrcode}
+                            size={Dimensions.get("screen").width / 1.3}
+                        />
+                    )} */}
                     <View
                         style={{
                             flex: 1,

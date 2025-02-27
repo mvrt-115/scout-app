@@ -45,7 +45,6 @@ const PreGame: FC<PreGameProps> = ({ navigation }) => {
       <Header
         matchInfo={{ teams, alliance, regional }}
         title={"PreGame"}
-        //toggleQRCode={() => sheetRef.current?.snapToIndex(0)}
         toggleQRCode={() => sheetRef.current?.snapToIndex(1)}
         navigation={navigation}
       />

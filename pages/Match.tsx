@@ -99,9 +99,11 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
             "Teleop Algae Processor Missed: counter", "Teleop Algae Net Scored: counter", "Teleop Algae Net Missed: counter", 
             "Played Defense: boolean"]
         setTeleopFields(teleopStuff.map((field: any) => getData(field)));
+        // const endgameStuff = ["Did Climb: boolean", "Climb Time: timer", {"Climb Level": ["None", "Shallow", "Deep"]}, 
+        //     "Recieved Auton RP: boolean", "Recieved Coral RP: boolean", "Recieved Coopertition RP: boolean", 
+        //     "Recieved Barge RP: boolean", "Drive Rating: rating", "Comments: text", "Park: boolean", "Tipped: boolean"]
         const endgameStuff = ["Did Climb: boolean", "Climb Time: timer", {"Climb Level": ["None", "Shallow", "Deep"]}, 
-            "Recieved Auton RP: boolean", "Recieved Coral RP: boolean", "Recieved Coopertition RP: boolean", 
-            "Recieved Barge RP: boolean", "Drive Rating: rating", "Comments: text"]
+            "Drive Rating: rating", "Comments: text", "Park: boolean", "Tipped: boolean"]
         setEndGameFields(endgameStuff.map((field: any) => getData(field)));
     }
     const fetchData = async () => {

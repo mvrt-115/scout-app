@@ -260,7 +260,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
                                 isLoggedIn() ? pushData() : navigation?.navigate("Login");
                             }}
                         >
-                            Finish Scout
+                            Finish Scout (press "home" button on top)
                         </Button>
                     </View>
                 </View>

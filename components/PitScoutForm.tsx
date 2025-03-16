@@ -473,28 +473,28 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                     }}
                     appearance="outline"
                     onPress={() => {
-                        if (!team || isNaN(parseInt(team))) {
-                            Toast.show({
-                                type: 'error',
-                                text1: "Enter a valid team number"
-                            })
-                        }
-                        else if (!regional || regional == "Option 0") {
-                            Toast.show({
-                                type: 'error',
-                                text1: "Enter a valid regional"
-                            })
-                        }
-                        else {
-                            navigation?.navigate('PitScoutCamera', {
-                                year: new Date().getFullYear(),
-                                regional,
-                                team,
-                            });
-                        }
+                        // if (!team || isNaN(parseInt(team))) {
+                        //     Toast.show({
+                        //         type: 'error',
+                        //         text1: "Enter a valid team number"
+                        //     })
+                        // }
+                        // else if (!regional || regional == "Option 0") {
+                        //     Toast.show({
+                        //         type: 'error',
+                        //         text1: "Enter a valid regional"
+                        //     })
+                        // }
+                        // else {
+                        //     navigation?.navigate('PitScoutCamera', {
+                        //         year: new Date().getFullYear(),
+                        //         regional,
+                        //         team,
+                        //     });
+                        // }
                     }}
                 >
-                    Take Photo! (don't use rn)
+                    Take Photo! (not working rn)
                 </Button>
                 <Button
                     status="danger"

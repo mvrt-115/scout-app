@@ -494,7 +494,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                         // }
                     }}
                 >
-                    Take Photo! (not working rn)
+                    reminder to take a picture and upload to photos folder with the format of just the team number as the image name
                 </Button>
                 <Button
                     status="danger"

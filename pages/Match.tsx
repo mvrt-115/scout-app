@@ -103,7 +103,9 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
         //     "Recieved Auton RP: boolean", "Recieved Coral RP: boolean", "Recieved Coopertition RP: boolean", 
         //     "Recieved Barge RP: boolean", "Drive Rating: rating", "Comments: text", "Park: boolean", "Tipped: boolean"]
         const endgameStuff = ["Did Climb: boolean", "Climb Time: timer", {"Climb Level": ["None", "Shallow", "Deep"]}, 
-            "Drive Rating: rating", "Comments: text", "Park: boolean", "Tipped: boolean"]
+            "Drive Rating: rating", "Scouter Name and Comments: text", "Park: boolean", "Tipped: boolean", 
+            "Can Score Front: boolean", "Can Score Front Left: boolean", "Can Score Front Right: boolean", 
+            "Can Score Back: boolean", "Can Score Back Left: boolean", "Can Score Back Right: boolean"]
         setEndGameFields(endgameStuff.map((field: any) => getData(field)));
     }
     const fetchData = async () => {

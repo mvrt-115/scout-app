@@ -91,7 +91,7 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
             "Auton Coral Level 2 Missed: counter", "Auton Coral Level 3 Scored: counter", "Auton Coral Level 3 Missed: counter", 
             "Auton Coral Level 4 Scored: counter", "Auton Coral Level 4 Missed: counter", "Auton Algae Processor Scored: counter", 
             "Auton Algae Processor Missed: counter", "Auton Algae Net Scored: counter", "Auton Algae Net Missed: counter", 
-            "Mobility: boolean"]
+            "Mobility: boolean", "Starts on 1: boolean", "Starts on 2: boolean", "Starts on 3: boolean", "Starts on 4: boolean", "Starts on 5: boolean"]
         setAutonFields(autonStuff.map((field: any) => getData(field)));
         const teleopStuff = ["Teleop Coral Level 1 Scored: counter", "Teleop Coral Level 1 Missed: counter", "Teleop Coral Level 2 Scored: counter", 
             "Teleop Coral Level 2 Missed: counter", "Teleop Coral Level 3 Scored: counter", "Teleop Coral Level 3 Missed: counter", 

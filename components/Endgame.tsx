@@ -89,7 +89,7 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
                 checked={postGameFields[index]}
                 onChange={(val) => {
                   const temp: any[] = [...postGameFields];
-                  if (field['name'] === 'Did Climb'){
+                  if (field['name'] === 'Climb Information (toggle this)'){
 										setDidClimb(val);
 										if(!val){
 											fields.forEach((value, i)=>{

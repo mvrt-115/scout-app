@@ -19,8 +19,8 @@ interface Team {
 
 const Comment: FC<CommentProps> = ({ navigation }) => {
 
-    const [regionals, setRegionals] = useState<string[]>(['camb']);
-    const [regional, setRegional] = useState<string>('camb');
+    const [regionals, setRegionals] = useState<string[]>(['idbo']);
+    const [regional, setRegional] = useState<string>('idbo');
     const [hasData, setHasData] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [teams, setTeams] = useState<Team[]>([{name: '', value: false}]);

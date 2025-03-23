@@ -3,7 +3,7 @@ import Header from "./Header";
 import { usePostGame, usePreGame } from "../Stores";
 import BottomSheet from "@gorhom/bottom-sheet";
 import QRCodeBottomSheet from "./QRCode";
-import { Alert, ScrollView, View } from "react-native";
+import { Alert, ScrollView, View, Image } from "react-native";
 import { Button, IndexPath, Input, Select, SelectItem, Text, Toggle } from "@ui-kitten/components";
 import {
   NavigationScreenProp,
@@ -14,9 +14,10 @@ import Stopwatch from "./Stopwatch";
 import Counter from "./Counter";
 
 interface EndGameProps {
-  navigation: any; //NavigationScreenProp<NavigationState, NavigationParams>;
+  navigation: any;
   fields: any[];
 }
+
 const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
   const sheetRef = useRef<BottomSheet>(null);
   const teams = usePreGame((state) => state.teams);
@@ -27,16 +28,15 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
   const setField = usePostGame((state) => state.setField);
   const [didClimb, setDidClimb] = useState<boolean>(false);
 
-
   useEffect(() => {
     if (postGameFields.length < fields.length) setPostGameFields(initializePostGameFields());
-    //("Endgame useEffect");
   }, [])
+
   const initializePostGameFields = () => {
     setPostGameFields([]);
     const tempPostGame: any[] = [];
     fields?.map((value, index) => {
-      if (value['type'] == "counter"|| value['type'] == 'timer') {
+      if (value['type'] == "counter" || value['type'] == 'timer') {
         tempPostGame.push(0);
       }
       else if (value['type'] == 'rating') tempPostGame.push(1);
@@ -53,6 +53,7 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
     })
     return tempPostGame;
   }
+
   return (
     <>
       <Header
@@ -90,18 +91,18 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
                 onChange={(val) => {
                   const temp: any[] = [...postGameFields];
                   if (field['name'] === 'Climb Information (toggle this)'){
-										setDidClimb(val);
-										if(!val){
-											fields.forEach((value, i)=>{
-												if(value['name'].indexOf("Climb Level")>-1){
-													temp[i] = "None"
-												}
-												if(value['name'].indexOf("Climb Time")>-1){
-													temp[i] = 0;
-												}
-											})
-										}
-									}
+                    setDidClimb(val);
+                    if(!val){
+                      fields.forEach((value, i)=>{
+                        if(value['name'].indexOf("Climb Level")>-1){
+                          temp[i] = "None"
+                        }
+                        if(value['name'].indexOf("Climb Time")>-1){
+                          temp[i] = 0;
+                        }
+                      })
+                    }
+                  }
                   temp[index] = val;
                   setPostGameFields(temp);
                 }}
@@ -171,8 +172,20 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
               />
             )
           }
-
         })}
+
+        <View style={{ alignItems: 'center', marginTop: 170, marginBottom: 120}}>
+          <Image 
+            source={require("../assets/reefpositions.png")} 
+            style={{
+              width: 200,
+              height: 300,
+              resizeMode: 'contain',
+              aspectRatio: 2.0, 
+              transform: [{ rotate: '90deg' }] // Rotate the image 90 degrees
+            }} 
+          />
+        </View>
 
       </ScrollView>
       <QRCodeBottomSheet sheetRef={sheetRef} navigation={navigation} />

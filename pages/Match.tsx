@@ -97,7 +97,7 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
             "Teleop Coral Level 2 Missed: counter", "Teleop Coral Level 3 Scored: counter", "Teleop Coral Level 3 Missed: counter", 
             "Teleop Coral Level 4 Scored: counter", "Teleop Coral Level 4 Missed: counter", "Teleop Algae Processor Scored: counter", 
             "Teleop Algae Processor Missed: counter", "Teleop Algae Net Scored: counter", "Teleop Algae Net Missed: counter", 
-            "Played Defense: boolean"]
+            "Played Defense: boolean", "Got Defended: boolean"]
         setTeleopFields(teleopStuff.map((field: any) => getData(field)));
         // const endgameStuff = ["Did Climb: boolean", "Climb Time: timer", {"Climb Level": ["None", "Shallow", "Deep"]}, 
         //     "Recieved Auton RP: boolean", "Recieved Coral RP: boolean", "Recieved Coopertition RP: boolean", 
@@ -105,7 +105,7 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
         const endgameStuff = ["Climb Information (toggle this): boolean", "Climb Time: timer", {"Climb Level": ["None", "Shallow Success", "Deep Success", "Shallow Failed", "Deep Failed"]}, 
             "Drive Rating: rating", "Scouter Name and Comments: text", "Park: boolean", "Tipped: boolean", 
             "Can Score Front: boolean", "Can Score Front Left: boolean", "Can Score Front Right: boolean", 
-            "Can Score Back: boolean", "Can Score Back Left: boolean", "Can Score Back Right: boolean"]
+            "Can Score Back: boolean", "Can Score Back Left: boolean", "Can Score Back Right: boolean", "Disabled: boolean"]
         setEndGameFields(endgameStuff.map((field: any) => getData(field)));
     }
     const fetchData = async () => {

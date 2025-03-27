@@ -87,18 +87,18 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
     }
 
     const hardCode = () =>{
-        const autonStuff = ["Auton Coral Level 1 Scored: counter", "Auton Coral Level 1 Missed: counter", "Auton Coral Level 2 Scored: counter", 
-            "Auton Coral Level 2 Missed: counter", "Auton Coral Level 3 Scored: counter", "Auton Coral Level 3 Missed: counter", 
-            "Auton Coral Level 4 Scored: counter", "Auton Coral Level 4 Missed: counter", "Auton Algae Processor Scored: counter", 
-            "Auton Algae Processor Missed: counter", "Auton Algae Net Scored: counter", "Auton Algae Net Missed: counter", 
+        const autonStuff = ["(A) Coral L1 Scored 🪸✅: counter", "(A) Coral L1 Missed 🪸❌: counter", "(A) Coral L2 Scored 🪸✅: counter", 
+            "(A) Coral L2 Missed 🪸❌: counter", "(A) Coral L3 Scored 🪸✅: counter", "(A) Coral L3 Missed 🪸❌: counter", 
+            "(A) Coral L4 Scored 🪸✅: counter", "(A) Coral L4 Missed 🪸❌: counter", "(A) Algae Processor Scored 🎾✅: counter", 
+            "(A) Algae Processor Missed 🎾❌: counter", "(A) Algae Net Scored 🥅✅: counter", "(A) Algae Net Missed 🥅❌: counter", 
             "Mobility: boolean", "Starts on 1: boolean", "Starts on 2: boolean", "Starts on 3: boolean", "Starts on 4: boolean", 
-            "Starts on 5: boolean", "Auton Algae Removed Success: counter", "Auton Algae Removed Failed: counter"]
+            "Starts on 5: boolean", "(A) Algae Removed Success ✅: counter", "(A) Algae Removed Failed ❌: counter"]
         setAutonFields(autonStuff.map((field: any) => getData(field)));
-        const teleopStuff = ["Teleop Coral Level 1 Scored: counter", "Teleop Coral Level 1 Missed: counter", "Teleop Coral Level 2 Scored: counter", 
-            "Teleop Coral Level 2 Missed: counter", "Teleop Coral Level 3 Scored: counter", "Teleop Coral Level 3 Missed: counter", 
-            "Teleop Coral Level 4 Scored: counter", "Teleop Coral Level 4 Missed: counter", "Teleop Algae Processor Scored: counter", 
-            "Teleop Algae Processor Missed: counter", "Teleop Algae Net Scored: counter", "Teleop Algae Net Missed: counter", 
-            "Played Defense: boolean", "Got Defended: boolean", "Teleop Algae Removed Success: counter", "Teleop Algae Removed Failed: counter"]
+        const teleopStuff = ["(T) Coral L1 Scored 🪸✅: counter", "(T) Coral L1 Missed 🪸❌: counter", "(T) Coral L2 Scored 🪸✅: counter", 
+            "(T) Coral L2 Missed 🪸❌: counter", "(T) Coral L3 Scored 🪸✅: counter", "(T) Coral L3 Missed 🪸❌: counter", 
+            "(T) Coral L4 Scored 🪸✅: counter", "(T) Coral L4 Missed 🪸❌: counter", "(T) Algae Processor Scored 🎾✅: counter", 
+            "(T) Algae Processor Missed 🎾❌: counter", "(T) Algae Net Scored 🥅✅: counter", "(T) Algae Net Missed 🥅❌: counter", 
+            "Played Defense: boolean", "Got Defended: boolean", "(T) Algae Removed Success ✅: counter", "(T) Algae Removed Failed ❌: counter"]
         setTeleopFields(teleopStuff.map((field: any) => getData(field)));
         // const endgameStuff = ["Did Climb: boolean", "Climb Time: timer", {"Climb Level": ["None", "Shallow", "Deep"]}, 
         //     "Recieved Auton RP: boolean", "Recieved Coral RP: boolean", "Recieved Coopertition RP: boolean", 

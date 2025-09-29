@@ -18,8 +18,8 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
 
     const pitScoutFields = usePitScout((state) => state.pitScoutFields);
     const setPitScoutFields = usePitScout((state) => state.setPitScoutFields);
-    const [regionals, setRegionals] = useState<string[]>(['sunshow']);
-    const [regional, setRegional] = useState<string>('sunshow');
+    const [regionals, setRegionals] = useState<string[]>(['cacg']);
+    const [regional, setRegional] = useState<string>('cacg');
     const year = new Date().getFullYear();
     const [teamNum, setTeamNum] = useState<number>();
     const [hasData, setHasData] = useState<boolean>(false);

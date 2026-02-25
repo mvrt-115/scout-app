@@ -22,7 +22,7 @@ import {
     NavigationParams,
 } from "react-navigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { dbCurYear } from '../firebase'
+import { dbCurYear, SEASON_YEAR } from '../firebase'
 import Toast from "react-native-toast-message";
 import { Navigate } from 'react-router-dom';
 
@@ -79,7 +79,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
         //const scoutingDocs = db.collection('years').doc(new Date().getFullYear() + "").collection('scouting');
         const scoutingDocs = collection(
             dbCurYear, 
-            '2025', 
+            SEASON_YEAR, 
             'scouting'
           );
         // await scoutingDocs.doc('auton').get().then((autonData) => {
@@ -124,7 +124,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
         pushingData['matchNum'] = preGameState.matchNum;
         // await db.collection('years').doc('2024').collection('regionals').doc(preGameState.regional)
         //     .collection("teams").doc(data.teamNum + "").collection("matches").doc(preGameState.matchNum + '').set(pushingData);
-        await setDoc(doc(dbCurYear, '2025', 'regionals', preGameState.regional, 'teams', data.teamNum + "", 'matches', preGameState.matchNum + ""), pushingData);
+        await setDoc(doc(dbCurYear, SEASON_YEAR, 'regionals', preGameState.regional, 'teams', data.teamNum + "", 'matches', preGameState.matchNum + ""), pushingData);
         Toast.show({ type: 'success', text1: 'Successfully saved data!' });
         setTimeout(() => {
             navigation?.navigate("Home");

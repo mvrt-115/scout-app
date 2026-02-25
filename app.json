@@ -36,9 +36,7 @@
       }
     },
     "owner": "mvrtscouting",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/a3310fc3-6330-43d9-932e-2089e56d6f15"
     }

@@ -36,6 +36,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
+export const SEASON_YEAR = '2026';
 export const dbCurYear = collection(db, `years`);
 export const auth = getAuth(app);
 export const storage = getStorage(app);

@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { ScrollView, Text, Alert, View, SafeAreaView, TouchableOpacity } from 'react-native';
 import { addDoc, collection, doc, getDoc, getDocs } from 'firebase/firestore';
-import { auth, dbCurYear } from '../firebase';
+import { auth, dbCurYear, SEASON_YEAR } from '../firebase';
 import { Button, IndexPath, Input, Select, SelectItem, Spinner, Toggle } from '@ui-kitten/components';
 import { usePitScout } from "../Stores";
 import Counter from "./Counter";
@@ -43,7 +43,7 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
     const getRegionals = async () => {
             const regionals: any[] = []
             /*
-            let regionalsCollection = collection(dbCurYear, 'years', '2025', 'regionals');
+            let regionalsCollection = collection(dbCurYear, 'years', SEASON_YEAR, 'regionals');
             let data = await getDoc(pitScoutingDoc);
             let arr = data.data()?.regionals;
             arr.forEach((doc) => {
@@ -51,7 +51,7 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
             })
             return regionals;
             */
-            let regionalsCollection = collection(dbCurYear, '2025', 'regionals');
+            let regionalsCollection = collection(dbCurYear, SEASON_YEAR, 'regionals');
             let data = await getDocs(regionalsCollection);
             data.forEach(docSnap => {
                 regionals.push(docSnap.id);
@@ -62,7 +62,7 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
 
     const getTeams = async () => {
         const prompts: any[] = [];
-        let teamsCollection = collection(dbCurYear, '2025', 'regionals', regional, 'teams');
+        let teamsCollection = collection(dbCurYear, SEASON_YEAR, 'regionals', regional, 'teams');
         let data = await getDocs(teamsCollection);
         // data.forEach((docSnap) => {
         //     let docData = docSnap.data();
@@ -87,7 +87,7 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
         addDoc(
             collection(
               dbCurYear,
-              '2025',
+              SEASON_YEAR,
               'regionals',
               regional,
               'teams',

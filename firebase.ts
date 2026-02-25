@@ -24,7 +24,7 @@ import 'firebase/storage';
 // };
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBVYgLi7CnBXVAo4aN0qFbRGFSozXiltHM",
+  apiKey: "AIzaSyCII1qqTPZyOqv4-mWGDIdnRVzZwV1IP-4",
   authDomain: "mvrt115-scout.firebaseapp.com",
   projectId: "mvrt115-scout",
   storageBucket: "mvrt115-scout.appspot.com",

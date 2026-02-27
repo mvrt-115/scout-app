@@ -11,7 +11,7 @@ import { Alert } from 'react-native';
 import { NavigationScreenProp, NavigationParams } from "react-navigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
-import { db, auth, dbCurYear } from '../firebase';
+import { db, auth, SEASON_YEAR } from '../firebase';
 
 
 const Tab = createBottomTabNavigator();
@@ -47,7 +47,16 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
     }
     
     useEffect(() => {
-        hardCode();
+        const loadFields = async () => {
+            try {
+                await fetchData();
+            } catch (e) {
+                console.warn('Firebase scouting fields not found, using fallback', e);
+                hardCode();
+            }
+        };
+        loadFields();
+
         if (route?.params?.data) {
             clearData();
             const matchInfo: string = route.params.data;
@@ -110,22 +119,24 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
         setEndGameFields(endgameStuff.map((field: any) => getData(field)));
     }
     const fetchData = async () => {
-        let scoutingCollection = collection(dbCurYear, '2025', 'scouting');
+        let scoutingCollection = collection(db, 'years', SEASON_YEAR, 'scouting');
         let autonDocRef = doc(scoutingCollection, 'auton');
         let autonSnap = await getDoc(autonDocRef);
-        setAutonFields(
-            Object.values(autonSnap.data()?.autonFields || {}).map((field: any) => getData(field))
-        );
+        const autonData = Object.values(autonSnap.data()?.autonFields || {}).map((field: any) => getData(field));
         let endgameDocRef = doc(scoutingCollection, 'endgame');
         let endgameSnap = await getDoc(endgameDocRef);
-        setEndGameFields(
-            Object.values(endgameSnap.data()?.endgameFields || {}).map((field: any) => getData(field))
-        );
+        const endgameData = Object.values(endgameSnap.data()?.endgameFields || {}).map((field: any) => getData(field));
         let teleopDocRef = doc(scoutingCollection, 'teleop');
         let teleopSnap = await getDoc(teleopDocRef);
-        setTeleopFields(
-            Object.values(teleopSnap.data()?.teleopFields || {}).map((field: any) => getData(field))
-        );
+        const teleopData = Object.values(teleopSnap.data()?.teleopFields || {}).map((field: any) => getData(field));
+
+        if (autonData.length > 0 && endgameData.length > 0 && teleopData.length > 0) {
+            setAutonFields(autonData);
+            setEndGameFields(endgameData);
+            setTeleopFields(teleopData);
+        } else {
+            throw new Error('Firebase returned empty field definitions');
+        }
         /*
         const scoutingDocs = db.collection('years').doc(`${new Date().getFullYear()}`).collection('scouting');
         await scoutingDocs.doc('auton').get().then((autonData) => {

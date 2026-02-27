@@ -75,4 +75,6 @@ buck-out/
 .expo/
 web-build/
 
+firebase.ts
+
 # @end expo-cli

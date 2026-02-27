@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { ScrollView, Text, Alert, View, TouchableOpacity } from 'react-native';
 import { collection, doc, getDoc, getDocs, Index, setDoc } from 'firebase/firestore';
-import { db, auth, dbCurYear } from '../firebase';
+import { db, auth, dbCurYear, SEASON_YEAR } from '../firebase';
 import { Button, IndexPath, Input, Select, SelectItem, Spinner, Toggle } from '@ui-kitten/components';
 import { usePitScout } from "../Stores";
 import Counter from "./Counter";
@@ -60,7 +60,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
     })
     const initalizePitScoutFields = async () => {
         const prompts: any[] = []
-        let pitScoutingDoc = doc(dbCurYear, '2025', 'scouting', 'pitScouting');
+        let pitScoutingDoc = doc(dbCurYear, SEASON_YEAR, 'scouting', 'pitScouting');
         let data = await getDoc(pitScoutingDoc);
         //getDoc(pitScoutingDoc).then((result) => console.log(result));
 
@@ -104,7 +104,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
     const getRegionals = async () => {
         const regionals: any[] = []
         /*
-        let regionalsCollection = collection(dbCurYear, 'years', '2025', 'regionals');
+        let regionalsCollection = collection(dbCurYear, 'years', SEASON_YEAR, 'regionals');
         let data = await getDoc(pitScoutingDoc);
         let arr = data.data()?.regionals;
         arr.forEach((doc) => {
@@ -112,7 +112,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
         })
         return regionals;
         */
-        let regionalsCollection = collection(dbCurYear, '2025', 'regionals');
+        let regionalsCollection = collection(dbCurYear, SEASON_YEAR, 'regionals');
         let data = await getDocs(regionalsCollection);
         data.forEach(docSnap => {
             regionals.push(docSnap.id);
@@ -123,7 +123,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
 
     const getTeams = async () => {
         const prompts: any[] = [];
-        let teamsCollection = collection(dbCurYear, '2025', 'regionals', regional, 'teams');
+        let teamsCollection = collection(dbCurYear, SEASON_YEAR, 'regionals', regional, 'teams');
         let data = await getDocs(teamsCollection);
         // data.forEach((docSnap) => {
         //   let docData = docSnap.data();
@@ -142,7 +142,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
     /*
     const getTeams = async () => {
         const prompts: any[] = []
-        let pitScoutingDoc = doc(dbCurYear, '2025/regionals');
+        let pitScoutingDoc = doc(dbCurYear, '2026/regionals');
         let data = await getDoc(pitScoutingDoc);
         let arr = data.data()?.regionals
         arr.doc("teams").get().then((data) => {
@@ -203,7 +203,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                 })
             });
         */
-        setDoc(doc(dbCurYear, '2025', 'regionals', regional, 'teams', team, 'pitScoutData', 'pitScoutAnswers'), answers).then(() => {
+        setDoc(doc(dbCurYear, SEASON_YEAR, 'regionals', regional, 'teams', team, 'pitScoutData', 'pitScoutAnswers'), answers).then(() => {
             Toast.show({
                 type: 'success',
                 text1: 'Successfully saved data!'
@@ -217,7 +217,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
             });
         });
     
-        setDoc(doc(dbCurYear, '2025', 'regionals', regional, 'teams'), teamNew).then(() => {
+        setDoc(doc(dbCurYear, SEASON_YEAR, 'regionals', regional, 'teams'), teamNew).then(() => {
             Toast.show({
                 type: 'success',
                 text1: 'Successfully saved data!'

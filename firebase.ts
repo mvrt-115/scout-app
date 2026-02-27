@@ -24,7 +24,7 @@ import 'firebase/storage';
 // };
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBVYgLi7CnBXVAo4aN0qFbRGFSozXiltHM",
+  apiKey: "AIzaSyCII1qqTPZyOqv4-mWGDIdnRVzZwV1IP-4",
   authDomain: "mvrt115-scout.firebaseapp.com",
   projectId: "mvrt115-scout",
   storageBucket: "mvrt115-scout.appspot.com",
@@ -36,6 +36,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
+export const SEASON_YEAR = '2026';
 export const dbCurYear = collection(db, `years`);
 export const auth = getAuth(app);
 export const storage = getStorage(app);

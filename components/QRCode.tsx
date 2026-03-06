@@ -15,7 +15,6 @@ import { Text, Button } from "@ui-kitten/components";
 import QRCode from "react-native-qrcode-svg";
 import { usePreGame, useAuton, useTeleop, usePostGame } from "../Stores";
 import { AutonData, PostGameData, PreGameData, TeleopData } from "../types";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import {
     NavigationScreenProp,
     NavigationState,
@@ -27,7 +26,7 @@ import Toast from "react-native-toast-message";
 import { Navigate } from 'react-router-dom';
 
 interface QRCodeBottomSheetProps {
-    sheetRef?: RefObject<BottomSheetMethods>;
+    sheetRef?: RefObject<any>;
     navigation?: NavigationScreenProp<NavigationState, NavigationParams>;
 }
 

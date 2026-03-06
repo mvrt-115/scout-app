@@ -25,29 +25,34 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 	const autonFields = useAuton((state) => state.autonFields);
 	const setAutonFields = useAuton((state) => state.setAutonFields);
 	const setField = useAuton((state) => state.setField);
+	const validFields = (fields || []).filter(Boolean);
 
 	const initializeAutonFields = () => {
 		const tempAuton: any[] = [];
-		fields?.map((field) => {
+		validFields.map((field) => {
 			const [name, type] = [field['name'], field['type']];
 			if (type === 'counter' || type === 'timer') tempAuton.push(0);
 			else if (type === 'boolean') tempAuton.push(false);
 			else if (type === 'text') tempAuton.push("");
 			else if (Array.isArray(type))
-				tempAuton.push(type['type'][0]);
+				tempAuton.push(type[0] ?? "");
 			else
 				tempAuton.push("");
 		});
 		return tempAuton;
 	}
 	useEffect(() => {
-		if (autonFields.length < fields.length) setAutonFields(initializeAutonFields());
-	}, []);
+		if (validFields.length === 0) return;
+		if (autonFields.length < validFields.length) setAutonFields(initializeAutonFields());
+	}, [validFields, autonFields.length, setAutonFields]);
 
 	// useEffect(() => {
 	// 	Alert.alert(JSON.stringify(autonFields));
 	// }, [autonFields])
 	const sheetRef = useRef<BottomSheet>(null);
+	
+	const isLoading = !fields;
+	const isEmpty = fields && validFields.length === 0;
 	// (navigation);
 	return (
 		<>
@@ -66,12 +71,21 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 			// keyboardDismissMode="on-drag"
 			>
 				
-				{fields?.map((field, index) => {
+				{isLoading ? (
+					<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+						<Text category="s1">Loading fields...</Text>
+					</View>
+				) : isEmpty ? (
+					<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+						<Text category="s1">No fields configured.</Text>
+					</View>
+				) : (
+					validFields.map((field, index) => {
 					const [name, type] = [field['name'], field['type']];
 					if (type === 'counter' || type === 'rating') {
 						var labelname=field['name'];
 						return (
-							<>
+							<View key={field.name ?? index}>
 							<Counter
 								rating={field['type'] === "rating"}
 								name={labelname}
@@ -82,12 +96,13 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 								}}
 								value={autonFields[index] == '' ? 0 : autonFields[index]}
 							/>
-							</>
+							</View>
 						);
 					}
 					else if (field['type'] == 'boolean') {
 						return (
 						  <Toggle
+							key={field.name ?? index}
 							checked={autonFields[index]}
 							onChange={(val) => {
 								const temp: any[] = [...autonFields];
@@ -95,7 +110,7 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 								setAutonFields(temp);
 							}}
 							style={{
-							  marginTop: "3%",
+							  marginTop: 8,
 							  padding: 4,
 							}}
 						  >
@@ -105,12 +120,13 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 					  }
 					else if (field['type'] == 'timer') {
 						return (
-							<Stopwatch name={field['name']} onChange={setField} fieldIndex={index} postFields={autonFields} ></Stopwatch>
+							<Stopwatch key={field.name ?? index} name={field['name']} onChange={setField} fieldIndex={index} postFields={autonFields} />
 						)
 					}
 					else {
 						return (
 							<Input
+								key={field.name ?? index}
 								multiline={true}
 								textStyle={{ minHeight: 64 }}
 								placeholder={field.name + "..."}
@@ -124,7 +140,7 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 							/>
 						)
 					}
-				})}
+				}) )}
                 <Image 
                     source={require("../assets/autonstart.png")} 
                     style={{ width: '100%', height: undefined, aspectRatio: 1.8, marginTop: 10}} 

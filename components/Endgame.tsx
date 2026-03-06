@@ -26,26 +26,30 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
   const setPostGameFields = usePostGame((state) => state.setPostGameFields);
   const setField = usePostGame((state) => state.setField);
   const [didClimb, setDidClimb] = useState<boolean>(false);
+  const validFields = (fields || []).filter(Boolean);
 
 
   useEffect(() => {
-    if (postGameFields.length < fields.length) setPostGameFields(initializePostGameFields());
+    if (validFields.length === 0) return;
+    if (postGameFields.length < validFields.length) {
+      setPostGameFields(initializePostGameFields());
+    }
     //("Endgame useEffect");
-  }, [])
+  }, [validFields, postGameFields.length, setPostGameFields]);
   const initializePostGameFields = () => {
-    setPostGameFields([]);
     const tempPostGame: any[] = [];
-    fields?.map((value, index) => {
-      if (value['type'] == "counter"|| value['type'] == 'timer') {
+    validFields.map((value, index) => {
+      const type = value['type'];
+      if (type == "counter"|| type == 'timer') {
         tempPostGame.push(0);
       }
-      else if (value['type'] == 'rating') tempPostGame.push(1);
-      else if (value['type'] == "boolean") tempPostGame.push(false);
-      else if (value['type'] == 'text') {
+      else if (type == 'rating') tempPostGame.push(1);
+      else if (type == "boolean") tempPostGame.push(false);
+      else if (type == 'text') {
         tempPostGame.push("");
       }
-      else if (Array.isArray(value['type'])) {
-        tempPostGame.push(value['type'][0]);
+      else if (Array.isArray(type)) {
+        tempPostGame.push(type[0] ?? "");
       }
       else {
         tempPostGame.push("");
@@ -69,7 +73,7 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
         }}
         keyboardDismissMode="on-drag"
       >
-        {fields?.map((field, index) => {
+        {validFields.map((field, index) => {
           if (field['type'] == 'counter' || field['type'] == 'rating') {
             return (
               <Counter
@@ -92,7 +96,7 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
                   if (field['name'] === 'Climb Information (toggle this)'){
 										setDidClimb(val);
 										if(!val){
-											fields.forEach((value, i)=>{
+                      validFields.forEach((value, i)=>{
 												if(value['name'].indexOf("Climb Level")>-1){
 													temp[i] = "None"
 												}
@@ -139,11 +143,13 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
           }
           else if (Array.isArray(field['type'])) {
             if (field['name'] == 'Climb Level' && !didClimb) return;
+            const currentIndex = field['type'].indexOf(postGameFields[index]);
             return <Select
-              selectedIndex={new IndexPath(field['type'].indexOf(postGameFields[index]))}
+              selectedIndex={new IndexPath(currentIndex >= 0 ? currentIndex : 0)}
               onSelect={(currIndex) => {
                 const temp: any[] = [...postGameFields];
-                temp[index] = field['type'][parseInt(currIndex.toString()) - 1];
+                const selected = Array.isArray(currIndex) ? currIndex[0] : currIndex;
+                temp[index] = field['type'][selected.row];
                 setPostGameFields(temp);
               }}
               label={field['name']}

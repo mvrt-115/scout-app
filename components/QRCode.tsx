@@ -248,7 +248,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
                                 // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                             }}
                         >
-                            Continue Scout
+                            Continue Scouting
                         </Button>
                         <Button
                             status="danger"

@@ -50,6 +50,7 @@ const Counter: FC<Props> = ({ name, onChange, value, rating }) => {
           >{`${name}: `}</Text>
           <Input
             keyboardType="number-pad"
+            value={`${value}`}
             style={{
               borderColor: "#dde",
               borderWidth: 1,
@@ -64,9 +65,7 @@ const Counter: FC<Props> = ({ name, onChange, value, rating }) => {
                 onChange(Math.min(Math.max(newVal, rating ? 1 : 0), rating ? 5 : 1000));
               }
             }}
-          >
-            {value}
-          </Input>
+          />
         </View>
         <Button
           style={[styles.button, styles.pos]}

@@ -27,21 +27,24 @@ const Teleop: FC<TeleopProps> = ({ navigation, fields }) => {
   const setTeleopFields = useTeleop((state) => state.setTeleopFields);
   const setField = useTeleop((state) => state.setField);
   const [playedDefense, setPlayedDefense] = useState<boolean>(false);
+  const validFields = (fields || []).filter(Boolean);
 
   useEffect(() => {
-    if (teleopFields.length == 0) {
+    if (validFields.length === 0) return;
+    if (teleopFields.length < validFields.length) {
       setTeleopFields(initializeTeleopFields());
     }
-  }, [])
+  }, [validFields, teleopFields.length, setTeleopFields]);
   const initializeTeleopFields = () => {
     const tempTeleop: any[] = [];
-    fields?.map((value) => {
-      if (value['type'] == "counter" || value['type'] == "timer") tempTeleop.push(0);
-      else if (value['type'] == 'rating') tempTeleop.push(1);
-      else if (value['type'] == "boolean") tempTeleop.push(false);
-      else if (value['type'] == 'text') tempTeleop.push("");
-      else if (Array.isArray(value['type']))
-        tempTeleop.push(value['type'][0]);
+    validFields.map((value) => {
+      const type = value['type'];
+      if (type == "counter" || type == "timer") tempTeleop.push(0);
+      else if (type == 'rating') tempTeleop.push(1);
+      else if (type == "boolean") tempTeleop.push(false);
+      else if (type == 'text') tempTeleop.push("");
+      else if (Array.isArray(type))
+        tempTeleop.push(type[0] ?? "");
       else
         tempTeleop.push("");
     });
@@ -65,7 +68,7 @@ const Teleop: FC<TeleopProps> = ({ navigation, fields }) => {
         keyboardDismissMode="on-drag"
       >
       
-        {fields?.map((field, index) => {
+        {validFields.map((field, index) => {
           if (field['type'] == 'counter' || field['type'] == 'rating') {
             var name=field['name'];
             return (
@@ -107,11 +110,13 @@ const Teleop: FC<TeleopProps> = ({ navigation, fields }) => {
             )
           }
           else if (Array.isArray(field['type'])) {
+            const currentIndex = field['type'].indexOf(teleopFields[index]);
             return <Select
-              selectedIndex={new IndexPath(field['type'].indexOf(teleopFields[index]))}
+              selectedIndex={new IndexPath(currentIndex >= 0 ? currentIndex : 0)}
               onSelect={(currIndex) => {
                 const temp: any[] = [...teleopFields];
-                temp[index] = field['type'][parseInt(currIndex.toString()) - 1];
+                const selected = Array.isArray(currIndex) ? currIndex[0] : currIndex;
+                temp[index] = field['type'][selected.row];
                 setTeleopFields(temp);
               }}
               label={field['name']}

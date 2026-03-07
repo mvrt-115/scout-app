@@ -6,6 +6,7 @@ import { Button, IndexPath, Input, Select, SelectItem, Spinner, Toggle } from '@
 import { usePitScout } from "../Stores";
 import Counter from "./Counter";
 import Toast from 'react-native-toast-message';
+import { useTheme } from "../contexts/ThemeContext";
 
 interface PitScoutProps {
     navigation: any,
@@ -15,6 +16,8 @@ interface PitScoutProps {
 import KeyboardAvoidingWrapper from "./KeyboardAvoidingWrapper";
 
 const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
+
+    const { colors } = useTheme();
 
     const pitScoutFields = usePitScout((state) => state.pitScoutFields);
     const setPitScoutFields = usePitScout((state) => state.setPitScoutFields);
@@ -249,7 +252,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
 
     return (!loading ?
         <KeyboardAvoidingWrapper>
-            <View style={{width: "90%", paddingLeft: "10%"}}>
+            <View style={{width: "90%", paddingLeft: "10%", backgroundColor: colors.background}}>
             <Toast position="bottom" bottomOffset={20} />
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
@@ -262,6 +265,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                         style={{
                             fontWeight: "800",
                             fontSize: 24,
+                            color: colors.text,
                         }}
                     >
                         ←

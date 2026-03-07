@@ -15,6 +15,7 @@ import { Text, Button } from "@ui-kitten/components";
 import QRCode from "react-native-qrcode-svg";
 import { usePreGame, useAuton, useTeleop, usePostGame } from "../Stores";
 import { AutonData, PostGameData, PreGameData, TeleopData } from "../types";
+import { useTheme } from "../contexts/ThemeContext";
 import {
     NavigationScreenProp,
     NavigationState,
@@ -38,6 +39,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
 }) => {
     //const snapPoints = useMemo(() => ["75%"], []);
     const snapPoints = useMemo(() => [1, "75%"], []);
+    const { colors, isDark } = useTheme();
 
 
     const [showQR, setShowQR] = useState<boolean>(false);
@@ -199,6 +201,8 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
                 animateOnMount={false}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
+                backgroundStyle={{ backgroundColor: colors.background }}
+                handleIndicatorStyle={{ backgroundColor: colors.text }}
                 style={{
                     shadowColor: "#000",
                     shadowOffset: {
@@ -280,7 +284,6 @@ const styles = StyleSheet.create({
         marginVertical: 20,
     },
     contentContainer: {
-        backgroundColor: "#fff",
         flex: 1,
         alignItems: "center",
         justifyContent: "center",

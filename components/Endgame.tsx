@@ -12,6 +12,7 @@ import {
 } from "react-navigation";
 import Stopwatch from "./Stopwatch";
 import Counter from "./Counter";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface EndGameProps {
   navigation: any; //NavigationScreenProp<NavigationState, NavigationParams>;
@@ -27,6 +28,7 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
   const setField = usePostGame((state) => state.setField);
   const [didClimb, setDidClimb] = useState<boolean>(false);
   const validFields = (fields || []).filter(Boolean);
+  const { colors } = useTheme();
 
 
   useEffect(() => {
@@ -70,6 +72,7 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
           display: "flex",
           flexDirection: "column",
           padding: "10%",
+          backgroundColor: colors.background,
         }}
         keyboardDismissMode="on-drag"
       >

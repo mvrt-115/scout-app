@@ -12,6 +12,7 @@ import {
 } from "react-navigation";
 import Stopwatch from "./Stopwatch";
 import Counter from "./Counter";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface TeleopProps {
   navigation: any; // NavigationScreenProp<NavigationState, NavigationParams>;
@@ -28,6 +29,7 @@ const Teleop: FC<TeleopProps> = ({ navigation, fields }) => {
   const setField = useTeleop((state) => state.setField);
   const [playedDefense, setPlayedDefense] = useState<boolean>(false);
   const validFields = (fields || []).filter(Boolean);
+  const { colors } = useTheme();
 
   useEffect(() => {
     if (validFields.length === 0) return;
@@ -64,6 +66,7 @@ const Teleop: FC<TeleopProps> = ({ navigation, fields }) => {
           display: "flex",
           flexDirection: "column",
           padding: "10%",
+          backgroundColor: colors.background,
         }}
         keyboardDismissMode="on-drag"
       >

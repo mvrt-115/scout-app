@@ -2,7 +2,7 @@ import { enableScreens } from "react-native-screens";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack"
 import { ApplicationProvider } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
@@ -13,6 +13,8 @@ import Match from "./pages/Match";
 import PitScout from './pages/PitScout';
 import Comment from "./components/Comment";
 import { auth } from "./firebase";
+import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+import { themeColors } from "./utils/themeColors";
 
 console.warn = () => { };
 console.log = () => { };
@@ -21,11 +23,25 @@ console.error = () => { };
 enableScreens();
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+function AppInner() {
+  const { isDark, colors } = useTheme();
+
+  const navigationTheme = {
+    ...(isDark ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(isDark ? DarkTheme.colors : DefaultTheme.colors),
+      background: colors.background,
+      card: colors.surface,
+      text: colors.text,
+      border: colors.border,
+      primary: colors.primary,
+    },
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <NavigationContainer>
+      <ApplicationProvider {...eva} theme={isDark ? eva.dark : eva.light}>
+        <NavigationContainer theme={navigationTheme}>
           <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
               options={{ headerShown: false }}
@@ -61,5 +77,13 @@ export default function App() {
         </NavigationContainer>
       </ApplicationProvider>
     </GestureHandlerRootView>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppInner />
+    </ThemeProvider>
   );
 }

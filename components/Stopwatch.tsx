@@ -1,6 +1,7 @@
 import { Button, Text } from "@ui-kitten/components";
 import React, { useState, useEffect } from "react";
 import { Alert, View } from "react-native";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface Props {
   onChange: (index: number, value: any) => void;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 const Stopwatch: React.FC<Props> = ({ onChange, postFields, fieldIndex, name }) => {
+  const { colors } = useTheme();
   const [secs, setTime] = useState(postFields[fieldIndex] ? parseFloat(postFields[fieldIndex]) : 0);
   const [isRunning, setIsRunning] = useState(false);
 

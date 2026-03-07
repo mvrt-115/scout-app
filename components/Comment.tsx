@@ -8,6 +8,7 @@ import Counter from "./Counter";
 import Toast from 'react-native-toast-message';
 import Header from "./Header";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface CommentProps {
     navigation: any,
@@ -18,6 +19,8 @@ interface Team {
   }
 
 const Comment: FC<CommentProps> = ({ navigation }) => {
+
+    const { colors } = useTheme();
 
     const [regionals, setRegionals] = useState<string[]>(['idbo']);
     const [regional, setRegional] = useState<string>('idbo');
@@ -113,7 +116,7 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
 
     return (!loading ?
         <>
-            <View style={{width: "90%", paddingLeft: "10%"}}>
+            <View style={{width: "90%", paddingLeft: "10%", backgroundColor: colors.background, flex: 1}}>
             <Toast position="bottom" bottomOffset={20} />
             <ScrollView
                 contentContainerStyle={{
@@ -135,6 +138,7 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
                         style={{
                             fontWeight: "800",
                             fontSize: 24,
+                            color: colors.text,
                         }}
                     >
                         ←

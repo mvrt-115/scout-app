@@ -16,6 +16,7 @@ import { dbCurYear, auth } from "../firebase";
 import Toast from "react-native-toast-message";
 import { Input } from "@ui-kitten/components";
 import { signInWithEmailAndPassword} from 'firebase/auth';
+import { useTheme } from "../contexts/ThemeContext";
 
 const Tab = createBottomTabNavigator();
 
@@ -33,7 +34,7 @@ interface MatchProps {
 const Login: FC<MatchProps> = ({ route, navigation }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  
+  const { colors, isDark } = useTheme();  
   
   const handleLogin = () => {
     //console.log("test without auth");
@@ -61,7 +62,7 @@ const Login: FC<MatchProps> = ({ route, navigation }) => {
   return (
     <>
     <Toast position="bottom" bottomOffset={20}/>
-      <View>
+      <View style={{ backgroundColor: colors.background }}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{
@@ -74,13 +75,14 @@ const Login: FC<MatchProps> = ({ route, navigation }) => {
             style={{
               fontWeight: "800",
               fontSize: 24,
+              color: colors.text,
             }}
           >
             ←
           </Text>
         </TouchableOpacity>
       </View>
-      <KeyboardAvoidingView style={styles.container}
+      <KeyboardAvoidingView style={[styles.container, { backgroundColor: colors.background }]}
         behavior={(Platform.OS === 'ios') ? 'padding' : undefined}
       >
         <View style={styles.inputContainer}>
@@ -118,7 +120,7 @@ const Login: FC<MatchProps> = ({ route, navigation }) => {
           /> */}
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => handleLogin()} style={styles.button}>
+          <TouchableOpacity onPress={() => handleLogin()} style={[styles.button, { backgroundColor: colors.primary }]}>
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
         </View>
@@ -140,7 +142,6 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   input: {
-    backgroundColor: "white",
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
@@ -153,16 +154,13 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   button: {
-    backgroundColor: "#2f064b",
     width: "100%",
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
   },
   buttonOutline: {
-    backgroundColor: "white",
     marginTop: 5,
-    borderColor: "#2f064b",
     borderWidth: 2,
   },
   buttonText: {

@@ -14,6 +14,7 @@ import {
   ForceTouchGestureHandler,
   TouchableOpacity,
 } from "react-native-gesture-handler";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
@@ -25,6 +26,7 @@ const QRScanner: FC<Props> = ({ navigation }) => {
   const [scanning, setScanning] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const [data, setData] = useState<string>("");
+  const { colors, isDark } = useTheme();
 
   const handleBarCodeScanned = ({ data }: { data: string }) => {
     setScanning(false);
@@ -152,7 +154,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 10,
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },

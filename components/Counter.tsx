@@ -1,6 +1,7 @@
 import { Button, Input, Layout, Text } from "@ui-kitten/components";
 import React, { FC } from "react";
 import { Alert, StyleSheet, View } from "react-native";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface Props {
   name: string | undefined;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 const Counter: FC<Props> = ({ name, onChange, value, rating }) => {
+  const { colors } = useTheme();
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
@@ -38,7 +40,7 @@ const Counter: FC<Props> = ({ name, onChange, value, rating }) => {
             paddingVertical: 6,
             borderTopWidth: 1,
             borderBottomWidth: 1,
-            borderColor: "#dde",
+            borderColor: colors.border,
           }}
         >
           <Text
@@ -52,7 +54,7 @@ const Counter: FC<Props> = ({ name, onChange, value, rating }) => {
             keyboardType="number-pad"
             value={`${value}`}
             style={{
-              borderColor: "#dde",
+              borderColor: colors.border,
               borderWidth: 1,
               padding: 6,
               paddingHorizontal: 10,

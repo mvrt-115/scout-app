@@ -8,6 +8,7 @@ import { Navigator } from 'react-router-dom';
 import Toast from "react-native-toast-message";
 import { NavigationParams, NavigationScreenProp, NavigationState } from "react-navigation";
 import { usePreGame } from "../Stores";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface HeaderProps {
   title: string;
@@ -24,6 +25,7 @@ const Header: FC<HeaderProps> = ({ title, matchInfo, toggleQRCode, navigation })
 
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const teamNum = usePreGame((state) => state.teamNum);
+  const { colors, isDark } = useTheme();
   useEffect(() => {
     auth.onAuthStateChanged(user => {
       if (user) setLoggedIn(true);
@@ -42,7 +44,7 @@ const Header: FC<HeaderProps> = ({ title, matchInfo, toggleQRCode, navigation })
           paddingHorizontal: 25,
           paddingBottom: 15,
           paddingTop: "7%",
-          backgroundColor: "#e0e0e0",
+          backgroundColor: colors.surface,
         }}
       >
         <View>
@@ -77,7 +79,7 @@ const Header: FC<HeaderProps> = ({ title, matchInfo, toggleQRCode, navigation })
             alignItems: "center",
           }}
         >
-          <Ionicons name="exit-outline" size={28} color={'#0782F9'} />
+          <Ionicons name="exit-outline" size={28} color={colors.blue} />
         </TouchableOpacity> :
           <TouchableOpacity
             onPress={() => {
@@ -96,7 +98,7 @@ const Header: FC<HeaderProps> = ({ title, matchInfo, toggleQRCode, navigation })
               alignItems: "center",
             }}
           >
-            <Ionicons name="enter-outline" size={28} color={'#0782F9'} />
+            <Ionicons name="enter-outline" size={28} color={colors.blue} />
           </TouchableOpacity>}
         <TouchableOpacity
           onPress={() => navigation?.navigate("Home")}
@@ -112,7 +114,7 @@ const Header: FC<HeaderProps> = ({ title, matchInfo, toggleQRCode, navigation })
               }}>
                   ⌂
               </Text> */}
-          <Ionicons name="home-outline" size={28} color={'#0782F9'} />
+          <Ionicons name="home-outline" size={28} color={colors.blue} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
@@ -128,7 +130,7 @@ const Header: FC<HeaderProps> = ({ title, matchInfo, toggleQRCode, navigation })
           <Text category="c1" style={{}}>
             Create
           </Text>
-          <Ionicons name="qr-code-outline" size={30} color={"black"} />
+          <Ionicons name="qr-code-outline" size={30} color={colors.text} />
         </TouchableOpacity>
       </View>
     </>

@@ -13,6 +13,7 @@ import {
 } from "react-navigation";
 import Stopwatch from "./Stopwatch";
 import Toast from "react-native-toast-message";
+import { useTheme } from "../contexts/ThemeContext";
 interface AutonProps {
 	navigation: any; // NavigationScreenProp<NavigationState, NavigationParams>;
 	fields: any[];
@@ -26,6 +27,7 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 	const setAutonFields = useAuton((state) => state.setAutonFields);
 	const setField = useAuton((state) => state.setField);
 	const validFields = (fields || []).filter(Boolean);
+	const { colors } = useTheme();
 
 	const initializeAutonFields = () => {
 		const tempAuton: any[] = [];
@@ -64,9 +66,10 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 			/>
 			<ScrollView
 				contentContainerStyle={{
-					display: "flex",
+					display: "flex", 	
 					flexDirection: "column",
 					padding: "10%",
+					backgroundColor: colors.background,
 				}}
 			// keyboardDismissMode="on-drag"
 			>
@@ -141,10 +144,10 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 						)
 					}
 				}) )}
-                <Image 
+                { <Image 
                     source={require("../assets/autonstart.png")} 
-                    style={{ width: '100%', height: undefined, aspectRatio: 1.8, marginTop: 10}} 
-                />
+                    style={{ width: '20%', marginTop: 10}} 
+                /> }
 			</ScrollView>
 			<QRCodeBottomSheet sheetRef={sheetRef} navigation={navigation} />
 		</>

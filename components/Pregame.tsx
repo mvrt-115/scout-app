@@ -5,6 +5,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import QRCodeBottomSheet from "./QRCode";
 import { ScrollView, View, Alert } from "react-native";
 import { IndexPath, Input, Select, SelectItem } from "@ui-kitten/components/ui";
+import { useTheme } from "../contexts/ThemeContext";
 import {
   NavigationScreenProp,
   NavigationState,
@@ -37,6 +38,7 @@ const PreGame: FC<PreGameProps> = ({ navigation }) => {
   const [selectedTeam, setSelectedTeam] = useState<IndexPath>(
     new IndexPath(teamNum ? teams.indexOf(teamNum) : 0)
   );
+  const { colors } = useTheme();
 
 
   const sheetRef = useRef<BottomSheet>(null);
@@ -54,6 +56,7 @@ const PreGame: FC<PreGameProps> = ({ navigation }) => {
           display: "flex",
           flexDirection: "column",
           padding: "10%",
+          backgroundColor: colors.background,
         }}
         keyboardDismissMode="on-drag"
       >

@@ -12,6 +12,7 @@ import { NavigationScreenProp, NavigationParams } from "react-navigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { collection, doc, getDoc } from 'firebase/firestore';
 import { db, SEASON_YEAR } from '../firebase';
+import { useTheme } from "../contexts/ThemeContext";
 
 
 const Tab = createBottomTabNavigator();
@@ -35,6 +36,7 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
     const setAutonValues = useAuton(state => state.setAutonFields);
     const setTeleopValues = useTeleop(state => state.setTeleopFields);
     const setPostGameValues = usePostGame(state => state.setPostGameFields);
+    const { colors, isDark } = useTheme();
 
     const clearData = () => {
         AsyncStorage.setItem("@scout_pregame", "");
@@ -167,9 +169,13 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
                         return <Ionicons name={iconName} size={size} color={color} />;
                     },
                     headerShown: false,
-                    activeTintColor: "#598BFF",
-                    inactiveTintColor: "gray",
-                    style: { height: 90 }
+                    tabBarActiveTintColor: colors.primary,
+                    tabBarInactiveTintColor: colors.gray,
+                    tabBarStyle: {
+                        height: 90,
+                        backgroundColor: colors.surface,
+                        borderTopColor: colors.border,
+                    },
                 })}
             >
                 <Tab.Screen name="Auton" component={AutonComponent}/>

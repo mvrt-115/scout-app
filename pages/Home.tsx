@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Button, Divider, Layout, Text } from "@ui-kitten/components";
 import {
   NavigationParams,
@@ -13,6 +13,8 @@ import { Navigate } from "react-router-dom";
 import { auth } from '../firebase'
 import Toast from 'react-native-toast-message';
 import { onAuthStateChanged } from "firebase/auth";
+import { useTheme } from "../contexts/ThemeContext";
+import { Ionicons } from "@expo/vector-icons";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
@@ -25,6 +27,7 @@ const Home: React.FC<Props> = ({ navigation }) => {
   const setTeleop = useTeleop((state) => state.set);
   const setPostGame = usePostGame((state) => state.set);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { colors, isDark, toggleTheme } = useTheme();
 
   useEffect(() => {
     ("HOME");
@@ -115,9 +118,19 @@ const Home: React.FC<Props> = ({ navigation }) => {
   return (
     <>
       <Toast position='top' topOffset={20} />
-      <Layout style={styles.container}>
-        <View style={styles.childContainer}>
-          <StatusBar style="auto" />
+      <Layout style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={[styles.childContainer, { backgroundColor: colors.background }]}>
+          <StatusBar style={isDark ? "light" : "auto"} />
+          <TouchableOpacity
+            onPress={toggleTheme}
+            style={styles.themeToggle}
+          >
+            <Ionicons
+              name={isDark ? "sunny-outline" : "moon-outline"}
+              size={28}
+              color={colors.text}
+            />
+          </TouchableOpacity>
           <View>
             <Text category="h1" style={{}}>
               Scout App
@@ -197,7 +210,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     position: "relative",
     resizeMode: "cover",
-    backgroundColor: "#fffe",
+  },
+  themeToggle: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    padding: 8,
   },
   button: {
     marginVertical: 10,

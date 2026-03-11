@@ -211,10 +211,8 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
 		{ <Image 
 				source={require("../assets/autonstart.png")} 
 				style={{
-					width: '95%',
-					height: 200  ,
-					maxWidth: 300,
-					aspectRatio: 1,
+					width: 700,
+					height: 200,
 					maxHeight: 300,
 					alignSelf: 'center',
 					marginTop: 15,

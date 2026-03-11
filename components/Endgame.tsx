@@ -23,6 +23,7 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
   const teams = usePreGame((state) => state.teams);
   const alliance = usePreGame((state) => state.alliance);
   const regional = usePreGame((state) => state.regional);
+  
   const postGameFields = usePostGame((state) => state.postGameFields);
   const setPostGameFields = usePostGame((state) => state.setPostGameFields);
   const setField = usePostGame((state) => state.setField);
@@ -71,7 +72,7 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
         contentContainerStyle={{
           display: "flex",
           flexDirection: "column",
-          padding: "10%",
+          padding: 0,
           backgroundColor: colors.background,
         }}
         keyboardDismissMode="on-drag"
@@ -182,18 +183,6 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
           }
 
         })}
-        <View style={{ alignItems: 'center', marginTop: 170, marginBottom: 120}}>
-          <Image 
-            source={require("../assets/reefpositions.png")} 
-            style={{
-              width: 200,
-              height: 300,
-              resizeMode: 'contain',
-              aspectRatio: 2.0, 
-              transform: [{ rotate: '90deg' }] // Rotate the image 90 degrees
-            }} 
-          />
-        </View>
       </ScrollView>
       <QRCodeBottomSheet sheetRef={sheetRef} navigation={navigation} />
     </>

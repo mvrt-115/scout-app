@@ -68,7 +68,7 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 				contentContainerStyle={{
 					display: "flex", 	
 					flexDirection: "column",
-					padding: "10%",
+					padding: 0,
 					backgroundColor: colors.background,
 				}}
 			// keyboardDismissMode="on-drag"
@@ -146,7 +146,17 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 				}) )}
                 { <Image 
                     source={require("../assets/autonstart.png")} 
-                    style={{ width: '20%', marginTop: 10}} 
+					style={{
+						width: '95%',
+						height: 200  ,
+						maxWidth: 300,
+						aspectRatio: 1,
+						maxHeight: 300,
+						alignSelf: 'center',
+						marginTop: 15,
+						marginBottom: 10,
+						borderRadius: 8,
+					}}
                 /> }
 			</ScrollView>
 			<QRCodeBottomSheet sheetRef={sheetRef} navigation={navigation} />

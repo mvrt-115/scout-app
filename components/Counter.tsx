@@ -36,8 +36,9 @@ const Counter: FC<Props> = ({ name, onChange, value, rating }) => {
             flex: 1,
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "space-around",
+            justifyContent: "space-between",
             paddingVertical: 6,
+            paddingHorizontal: 8,
             borderTopWidth: 1,
             borderBottomWidth: 1,
             borderColor: colors.border,
@@ -54,13 +55,12 @@ const Counter: FC<Props> = ({ name, onChange, value, rating }) => {
             keyboardType="number-pad"
             value={`${value}`}
             style={{
+              width: 72,
               borderColor: colors.border,
               borderWidth: 1,
-              padding: 6,
-              paddingHorizontal: 10,
               borderRadius: 3,
-              // fontSize: 30
             }}
+            textStyle={{ textAlign: "center", paddingVertical: 6, paddingHorizontal: 8 }}
             onChangeText={(value) => {
               let newVal : number = parseInt(value);
               if(newVal || newVal===0) {

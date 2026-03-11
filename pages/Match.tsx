@@ -178,9 +178,8 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
                     },
                 })}
             >
-                <Tab.Screen name="Auton" component={AutonComponent}/>
                 <Tab.Screen name="PreGame" component={PreGameComponent} />
-                
+                <Tab.Screen name="Auton" component={AutonComponent}/>
                 <Tab.Screen name="Teleop" component={TeleopComponent} />
                 <Tab.Screen name="EndGame" component={EndGameComponent} />
             </Tab.Navigator>

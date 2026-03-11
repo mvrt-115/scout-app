@@ -1,6 +1,6 @@
 import BottomSheet from "@gorhom/bottom-sheet";
-import { auth } from '../firebase';
-import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
+import { auth, dbCurYear, SEASON_YEAR } from '../firebase';
+import { collection, doc, getDoc, setDoc } from 'firebase/firestore';
 import React, {
     FC,
     RefObject,
@@ -22,9 +22,7 @@ import {
     NavigationParams,
 } from "react-navigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { dbCurYear, SEASON_YEAR } from '../firebase'
 import Toast from "react-native-toast-message";
-import { Navigate } from 'react-router-dom';
 
 interface QRCodeBottomSheetProps {
     sheetRef?: RefObject<any>;
@@ -55,7 +53,6 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
 
     const isLoggedIn = () => {
         return auth.currentUser != null;
-        return true;
     }
 
     const dataType = (field: any) => {
@@ -112,7 +109,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
                 .values(teleopData.data()?.teleopFields || {})
                 .map((field: any) => dataType(field));
             });
-        let pushingData = {};
+        const pushingData: Record<string, any> = {};
         autonFields.forEach((field, index) => {
             pushingData[field['name']] = data.autonFields[index];
         });

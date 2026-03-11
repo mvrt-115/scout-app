@@ -4,7 +4,7 @@ import Header from "./Header";
 import BottomSheet from "@gorhom/bottom-sheet";
 import QRCodeBottomSheet from "./QRCode";
 import { ScrollView, View, Alert, Pressable, Image } from "react-native";
-import { Button, Input, Text, Toggle } from "@ui-kitten/components";
+import { Button, IndexPath, Input, Select, SelectItemPath, Input, Select, SelectItem, Text, Toggle } from "@ui-kitten/components";
 import Counter from "./Counter";
 import {
 	NavigationScreenProp,
@@ -125,6 +125,50 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 						return (
 							<Stopwatch key={field.name ?? index} name={field['name']} onChange={setField} fieldIndex={index} postFields={autonFields} />
 						)
+					}
+					else if (Array.isArray(field['type'])) {
+						const currentIndex = field['type'].indexOf(autonFields[index]);
+						return (
+							<Select
+								key={field.name ?? index}
+								selectedIndex={new IndexPath(currentIndex >= 0 ? currentIndex : 0)}
+								onSelect={(currIndex) => {
+									const temp: any[] = [...autonFields];
+									const selected = Array.isArray(currIndex) ? currIndex[0] : currIndex;
+									temp[index] = field['type'][selected.row];
+									setAutonFields(temp);
+								}}
+								label={field['name']}
+								style={{ marginBottom: "3%" }}
+								value={autonFields[index]}
+							>
+								{field['type'].map((val: any, currIndex: number) => (
+									<SelectItem key={currIndex} title={val} />
+								))}
+							</Select>
+						);
+					}
+					else if (Array.isArray(field['type'])) {
+						const currentIndex = field['type'].indexOf(autonFields[index]);
+						return (
+							<Select
+								key={field.name ?? index}
+								selectedIndex={new IndexPath(currentIndex >= 0 ? currentIndex : 0)}
+								onSelect={(currIndex) => {
+									const temp: any[] = [...autonFields];
+									const selected = Array.isArray(currIndex) ? currIndex[0] : currIndex;
+									temp[index] = field['type'][selected.row];
+									setAutonFields(temp);
+								}}
+								label={field['name']}
+								style={{ marginBottom: "3%" }}
+								value={autonFields[index]}
+							>
+								{field['type'].map((val: any, currIndex: number) => (
+									<SelectItem key={currIndex} title={val} />
+								))}
+							</Select>
+						);
 					}
 					else {
 						return (

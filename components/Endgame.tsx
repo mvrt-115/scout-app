@@ -30,7 +30,17 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
   const [didClimb, setDidClimb] = useState<boolean>(false);
   const validFields = (fields || []).filter(Boolean);
   const { colors } = useTheme();
-
+  const hasClimbToggle = validFields.some(
+      (f) => f?.name === "Climb Information (toggle this)" && f?.type === "boolean"
+    );
+    const climbLevelIndex = validFields.findIndex(
+      (f) => typeof f?.name === "string" && f.name.includes("Climb Level") && Array.isArray(f.type)
+    );
+    const derivedDidClimb =
+      climbLevelIndex >= 0 &&
+      postGameFields?.[climbLevelIndex] !== undefined &&
+      postGameFields?.[climbLevelIndex] !== "" &&
+      postGameFields?.[climbLevelIndex] !== "None";
 
   useEffect(() => {
     if (validFields.length === 0) return;
@@ -39,6 +49,14 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
     }
     //("Endgame useEffect");
   }, [validFields, postGameFields.length, setPostGameFields]);
+  useEffect(() => {
+    if (hasClimbToggle) return;
+    // If the schema doesn't include the climb toggle, infer "did climb"
+    // from the selected climb level (usually "None" vs Level 1/2/3).
+    if (climbLevelIndex < 0) return;
+    setDidClimb(Boolean(derivedDidClimb));
+  }, [hasClimbToggle, climbLevelIndex, derivedDidClimb]);
+
   const initializePostGameFields = () => {
     const tempPostGame: any[] = [];
     validFields.map((value, index) => {
@@ -139,14 +157,18 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
             )
           }
           else if (field['type'] == 'timer') {
-            if(didClimb){
+            const isClimbTime = typeof field?.name === "string" && field.name.includes("Climb Time");
+            if (hasClimbToggle || isClimbTime) {
+              if (!(hasClimbToggle ? didClimb : derivedDidClimb)) return null;
+            }
               return (
                 <Stopwatch name={field['name']} onChange={setField} fieldIndex={index} postFields={postGameFields} ></Stopwatch>
               )
-            }
+            
           }
           else if (Array.isArray(field['type'])) {
-            if (field['name'] == 'Climb Level' && !didClimb) return;
+            const isClimbLevel = typeof field?.name === "string" && field.name.includes("Climb Level");
+            if (hasClimbToggle && isClimbLevel && !didClimb) return null;            
             const currentIndex = field['type'].indexOf(postGameFields[index]);
             return <Select
               selectedIndex={new IndexPath(currentIndex >= 0 ? currentIndex : 0)}
@@ -154,6 +176,9 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
                 const temp: any[] = [...postGameFields];
                 const selected = Array.isArray(currIndex) ? currIndex[0] : currIndex;
                 temp[index] = field['type'][selected.row];
+                if (!hasClimbToggle && isClimbLevel) {
+                  setDidClimb(temp[index] !== "None" && temp[index] !== "");
+                }
                 setPostGameFields(temp);
               }}
               label={field['name']}

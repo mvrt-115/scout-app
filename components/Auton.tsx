@@ -43,7 +43,7 @@ const Auton: FC<AutonProps> = ({ navigation, fields }) => {
 		});
 		return tempAuton;
 	}
-	useEffect(() => {
+	useEffect(() => {``
 		if (validFields.length === 0) return;
 		if (autonFields.length < validFields.length) setAutonFields(initializeAutonFields());
 	}, [validFields, autonFields.length, setAutonFields]);

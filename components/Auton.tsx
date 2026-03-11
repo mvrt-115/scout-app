@@ -4,7 +4,7 @@ import Header from "./Header";
 import BottomSheet from "@gorhom/bottom-sheet";
 import QRCodeBottomSheet from "./QRCode";
 import { ScrollView, View, Alert, Pressable, Image } from "react-native";
-import { Button, Input, Text, Toggle } from "@ui-kitten/components";
+import { Input, Text, Toggle } from "@ui-kitten/components";
 import Counter from "./Counter";
 import {
 	NavigationScreenProp,

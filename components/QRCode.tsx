@@ -196,6 +196,7 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
                 ref={sheetRef}
                 index={-1}
                 animateOnMount={false}
+                enableDynamicSizing={false}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
                 backgroundStyle={{ backgroundColor: colors.background }}

@@ -1,89 +1,55 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef } from "react";
 import Header from "./Header";
-import { usePostGame, usePreGame } from "../Stores";
+import { useAuton, usePreGame } from "../Stores";
 import BottomSheet from "@gorhom/bottom-sheet";
 import QRCodeBottomSheet from "./QRCode";
-import { Alert, ScrollView, View, Image } from "react-native";
-import { Button, IndexPath, Input, Select, SelectItem, Text, Toggle } from "@ui-kitten/components";
-import {
-  NavigationScreenProp,
-  NavigationState,
-  NavigationParams,
-} from "react-navigation";
+import { ScrollView, Image } from "react-native";
+import { IndexPath, Input, Select, SelectItem, Toggle } from "@ui-kitten/components";
 import Stopwatch from "./Stopwatch";
 import Counter from "./Counter";
 import { useTheme } from "../contexts/ThemeContext";
 
-interface EndGameProps {
-  navigation: any; //NavigationScreenProp<NavigationState, NavigationParams>;
+interface AutonProps {
+  navigation: any;
   fields: any[];
 }
-const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
+const Auton: FC<AutonProps> = ({ navigation, fields }) => {
   const sheetRef = useRef<BottomSheet>(null);
   const teams = usePreGame((state) => state.teams);
   const alliance = usePreGame((state) => state.alliance);
   const regional = usePreGame((state) => state.regional);
-  
-  const postGameFields = usePostGame((state) => state.postGameFields);
-  const setPostGameFields = usePostGame((state) => state.setPostGameFields);
-  const setField = usePostGame((state) => state.setField);
-  const [didClimb, setDidClimb] = useState<boolean>(false);
+
+  const autonFields = useAuton((state) => state.autonFields);
+  const setAutonFields = useAuton((state) => state.setAutonFields);
+  const setField = useAuton((state) => state.setField);
   const validFields = (fields || []).filter(Boolean);
   const { colors } = useTheme();
-  const hasClimbToggle = validFields.some(
-    (f) => f?.name === "Climb Information (toggle this)" && f?.type === "boolean"
-  );
-  const climbLevelIndex = validFields.findIndex(
-    (f) => typeof f?.name === "string" && f.name.includes("Climb Level") && Array.isArray(f.type)
-  );
-  const derivedDidClimb =
-    climbLevelIndex >= 0 &&
-    postGameFields?.[climbLevelIndex] !== undefined &&
-    postGameFields?.[climbLevelIndex] !== "" &&
-    postGameFields?.[climbLevelIndex] !== "None";
-
 
   useEffect(() => {
     if (validFields.length === 0) return;
-    if (postGameFields.length < validFields.length) {
-      setPostGameFields(initializePostGameFields());
+    if (autonFields.length < validFields.length) {
+      setAutonFields(initializeAutonFields());
     }
-    //("Endgame useEffect");
-  }, [validFields, postGameFields.length, setPostGameFields]);
+  }, [validFields, autonFields.length, setAutonFields]);
 
-  useEffect(() => {
-    if (hasClimbToggle) return;
-    // If the schema doesn't include the climb toggle, infer "did climb"
-    // from the selected climb level (usually "None" vs Level 1/2/3).
-    if (climbLevelIndex < 0) return;
-    setDidClimb(Boolean(derivedDidClimb));
-  }, [hasClimbToggle, climbLevelIndex, derivedDidClimb]);
-  const initializePostGameFields = () => {
-    const tempPostGame: any[] = [];
-    validFields.map((value, index) => {
+  const initializeAutonFields = () => {
+    const temp: any[] = [];
+    validFields.forEach((value) => {
       const type = value['type'];
-      if (type == "counter"|| type == 'timer') {
-        tempPostGame.push(0);
-      }
-      else if (type == 'rating') tempPostGame.push(1);
-      else if (type == "boolean") tempPostGame.push(false);
-      else if (type == 'text') {
-        tempPostGame.push("");
-      }
-      else if (Array.isArray(type)) {
-        tempPostGame.push(type[0] ?? "");
-      }
-      else {
-        tempPostGame.push("");
-      }
-    })
-    return tempPostGame;
-  }
+      if (type === "counter" || type === 'timer') temp.push(0);
+      else if (type === 'rating') temp.push(1);
+      else if (type === "boolean") temp.push(false);
+      else if (type === 'text') temp.push("");
+      else if (Array.isArray(type)) temp.push(type[0] ?? "");
+      else temp.push("");
+    });
+    return temp;
+  };
   return (
     <>
       <Header
         matchInfo={{ teams, alliance, regional }}
-        title={"EndGame"}
+        title={"Auton"}
         toggleQRCode={() => sheetRef.current?.snapToIndex(1)}
         navigation={navigation}
       />
@@ -97,116 +63,87 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
         keyboardDismissMode="on-drag"
       >
         {validFields.map((field, index) => {
-          if (field['type'] == 'counter' || field['type'] == 'rating') {
+          if (field['type'] === 'counter' || field['type'] === 'rating') {
             return (
               <Counter
-                rating={field['type'] == 'rating'}
+                key={index}
+                rating={field['type'] === 'rating'}
                 name={field['name']}
                 onChange={(val) => {
-                  const temp: any[] = [...postGameFields];
+                  const temp: any[] = [...autonFields];
                   temp[index] = val;
-                  setPostGameFields(temp);
+                  setAutonFields(temp);
                 }}
-                value={postGameFields[index]} />
-            )
+                value={autonFields[index] === '' ? 0 : autonFields[index]}
+              />
+            );
           }
-          else if (field['type'] == 'boolean') {
+          else if (field['type'] === 'boolean') {
             return (
               <Toggle
-                checked={postGameFields[index]}
+                key={index}
+                checked={autonFields[index]}
                 onChange={(val) => {
-                  const temp: any[] = [...postGameFields];
-                  if (field['name'] === 'Climb Information (toggle this)'){
-										setDidClimb(val);
-										if(!val){
-                      validFields.forEach((value, i)=>{
-												if(value['name'].indexOf("Climb Level")>-1){
-													temp[i] = "None"
-												}
-												if(value['name'].indexOf("Climb Time")>-1){
-													temp[i] = 0;
-												}
-											})
-										}
-									}
+                  const temp: any[] = [...autonFields];
                   temp[index] = val;
-                  setPostGameFields(temp);
+                  setAutonFields(temp);
                 }}
-                style={{
-                  marginTop: "3%",
-                  padding: 4,
-                }}
+                style={{ marginTop: "3%", padding: 4 }}
               >
                 {field['name']}
               </Toggle>
-            )
+            );
           }
-          else if (field['type'] == 'text') {
+          else if (field['type'] === 'timer') {
             return (
-              <Input
-                multiline={true}
-                textStyle={{ minHeight: 64 }}
-                placeholder={field.name + "..."}
-                label={field['name']}
-                value={postGameFields[index]}
-                onChangeText={(val) => {
-                  const temp: any[] = [...postGameFields];
-                  temp[index] = val;
-                  setPostGameFields(temp);
-                }}
+              <Stopwatch
+                key={index}
+                name={field['name']}
+                onChange={setField}
+                fieldIndex={index}
+                postFields={autonFields}
               />
-            )
-          }
-          else if (field['type'] == 'timer') {
-            const isClimbTime = typeof field?.name === "string" && field.name.includes("Climb Time");
-            if (hasClimbToggle || isClimbTime) {
-              if (!(hasClimbToggle ? didClimb : derivedDidClimb)) return null;
-            }
-            return (
-              <Stopwatch name={field['name']} onChange={setField} fieldIndex={index} postFields={postGameFields} ></Stopwatch>
-            )
+            );
           }
           else if (Array.isArray(field['type'])) {
-            const isClimbLevel = typeof field?.name === "string" && field.name.includes("Climb Level");
-            if (hasClimbToggle && isClimbLevel && !didClimb) return null;
-            const currentIndex = field['type'].indexOf(postGameFields[index]);
-            return <Select
-              selectedIndex={new IndexPath(currentIndex >= 0 ? currentIndex : 0)}
-              onSelect={(currIndex) => {
-                const temp: any[] = [...postGameFields];
-                const selected = Array.isArray(currIndex) ? currIndex[0] : currIndex;
-                temp[index] = field['type'][selected.row];
-                if (!hasClimbToggle && isClimbLevel) {
-                  setDidClimb(temp[index] !== "None" && temp[index] !== "");
-                }
-                setPostGameFields(temp);
-              }}
-              label={field['name']}
-              style={{ marginBottom: "3%" }}
-              value={postGameFields[index]}
-            >
-              {field['type'].map((val, currIndex) => {
-                return <SelectItem title={val} />
-              })}
-            </Select>
+            const currentIndex = field['type'].indexOf(autonFields[index]);
+            return (
+              <Select
+                key={index}
+                selectedIndex={new IndexPath(currentIndex >= 0 ? currentIndex : 0)}
+                onSelect={(currIndex) => {
+                  const temp: any[] = [...autonFields];
+                  const selected = Array.isArray(currIndex) ? currIndex[0] : currIndex;
+                  temp[index] = field['type'][selected.row];
+                  setAutonFields(temp);
+                }}
+                label={field['name']}
+                style={{ marginBottom: "3%" }}
+                value={autonFields[index]}
+              >
+                {field['type'].map((val: string, currIndex: number) => (
+                  <SelectItem key={currIndex} title={val} />
+                ))}
+              </Select>
+            );
           }
           else {
             return (
               <Input
+                key={index}
                 multiline={true}
                 textStyle={{ minHeight: 64 }}
                 placeholder={field.name + "..."}
                 label={field['name']}
-                value={postGameFields[index]}
+                value={autonFields[index]}
                 onChangeText={(val) => {
-                  const temp: any[] = [...postGameFields];
+                  const temp: any[] = [...autonFields];
                   temp[index] = val;
-                  setPostGameFields(temp);
+                  setAutonFields(temp);
                 }}
               />
-            )
+            );
           }
-
         })}
 		{ <Image 
 				source={require("../assets/autonstart.png")} 
@@ -226,4 +163,4 @@ const EndGame: FC<EndGameProps> = ({ navigation, fields }) => {
   );
 };
 
-export default EndGame;
+export default Auton;

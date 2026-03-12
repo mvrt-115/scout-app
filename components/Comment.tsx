@@ -22,8 +22,8 @@ const Comment: FC<CommentProps> = ({ navigation }) => {
 
     const { colors } = useTheme();
 
-    const [regionals, setRegionals] = useState<string[]>(['idbo']);
-    const [regional, setRegional] = useState<string>('idbo');
+    const [regionals, setRegionals] = useState<string[]>(['casv']);
+    const [regional, setRegional] = useState<string>('casv');
     const [hasData, setHasData] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [teams, setTeams] = useState<Team[]>([{name: '', value: false}]);

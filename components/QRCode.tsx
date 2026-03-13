@@ -15,7 +15,6 @@ import { Text, Button } from "@ui-kitten/components";
 import QRCode from "react-native-qrcode-svg";
 import { usePreGame, useAuton, useTeleop, usePostGame } from "../Stores";
 import { AutonData, PostGameData, PreGameData, TeleopData } from "../types";
-import { useTheme } from "../contexts/ThemeContext";
 import {
     NavigationScreenProp,
     NavigationState,
@@ -37,7 +36,6 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
 }) => {
     //const snapPoints = useMemo(() => ["75%"], []);
     const snapPoints = useMemo(() => [1, "75%"], []);
-    const { colors, isDark } = useTheme();
 
 
     const [showQR, setShowQR] = useState<boolean>(false);
@@ -199,8 +197,8 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
                 enableDynamicSizing={false}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
-                backgroundStyle={{ backgroundColor: colors.background }}
-                handleIndicatorStyle={{ backgroundColor: colors.text }}
+                backgroundStyle={{ backgroundColor: "#FFFFFF" }}
+                handleIndicatorStyle={{ backgroundColor: "#111111" }}
                 style={{
                     shadowColor: "#000",
                     shadowOffset: {
@@ -213,15 +211,19 @@ const QRCodeBottomSheet: FC<QRCodeBottomSheetProps> = ({
                     elevation: 11,
                 }}
             >
-                <View style={styles.contentContainer}>
-                    <Text style={{ marginBottom: 20 }}>
+                <View style={[styles.contentContainer, { backgroundColor: "#FFFFFF" }]}>
+                    <Text style={{ marginBottom: 20, color: "#111111" }}>
                         Scan this QR Code with the Super Scout Scanner
                     </Text>
                     {showQR && (
-                        <QRCode
-                            value={JSON.stringify(getData())}
-                            size={Dimensions.get("screen").width / 1.3}
-                        />
+                        <View style={styles.qrContainer}>
+                            <QRCode
+                                value={JSON.stringify(getData())}
+                                size={Dimensions.get("screen").width / 1.3}
+                                color="#000000"
+                                backgroundColor="#FFFFFF"
+                            />
+                        </View>
                     )}
                     {/* <QRCode
                         value={JSON.stringify(getData())}
@@ -285,6 +287,11 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+    },
+    qrContainer: {
+        backgroundColor: "#FFFFFF",
+        padding: 10,
+        borderRadius: 8,
     },
 });
 

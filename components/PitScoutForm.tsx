@@ -21,8 +21,8 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
 
     const pitScoutFields = usePitScout((state) => state.pitScoutFields);
     const setPitScoutFields = usePitScout((state) => state.setPitScoutFields);
-    const [regionals, setRegionals] = useState<string[]>(['casv']);
-    const [regional, setRegional] = useState<string>('casv');
+    const [regionals, setRegionals] = useState<string[]>(['casnv']);
+    const [regional, setRegional] = useState<string>('casnv');
     const year = new Date().getFullYear();
     const [teamNum, setTeamNum] = useState<number>();
     const [hasData, setHasData] = useState<boolean>(false);

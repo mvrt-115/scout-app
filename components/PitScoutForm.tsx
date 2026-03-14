@@ -59,8 +59,11 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
     }, [finishTeam, regional])
 
     useEffect(() => {
-        setTeams
-    })
+        (async () => {
+            setTeams(await getTeams());
+        })();
+    }, [finishTeam, regional])
+
     const initalizePitScoutFields = async () => {
         const prompts: any[] = []
         let pitScoutingDoc = doc(dbCurYear, SEASON_YEAR, 'scouting', 'pitScouting');
@@ -100,6 +103,23 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
                 }
             }
         });
+        
+        // Inject 2026 specific fields if they are missing
+        const requiredFields = [
+          { name: 'Hopper Volume', type: 'counter' },
+          { name: 'Firing Rate (per sec)', type: 'counter' },
+          { name: 'Robot Footprint', type: 'text' }
+        ];
+
+        requiredFields.forEach(req => {
+            if (!prompts.some(p => p.name === req.name)) {
+                prompts.push({
+                    name: req.name,
+                    value: req.type === 'counter' ? 0 : ''
+                });
+            }
+        });
+
         setHasData(false);
         return prompts;
     }
@@ -241,7 +261,7 @@ const PitScoutForm: FC<PitScoutProps> = ({ navigation }) => {
     }
 
     const isLoggedIn = (): boolean => {
-        return auth.currentUser != null;
+        // return auth.currentUser != null;
         return true;
     }
 

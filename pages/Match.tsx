@@ -85,19 +85,40 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
     }, []);
 
     const getData = (field: any) => {
-        if (typeof field === 'object') {
-            return ({
-                name: Object.keys(field)[0].trim(),
-                type: Object.values(field)[0]
-            });
+        // Dropdown object: {"Dropdown Name": ["Opt1", "Opt2"]}
+        if (typeof field === 'object' && field !== null) {
+            if (field.name && field.type) return field;
+            const key = Object.keys(field)[0];
+            const options = Object.values(field)[0];
+            return {
+                name: key.trim(),
+                type: 'selection',
+                options: options,
+            };
         }
-        const [name, type] = field.trim().split(':');
-        if (typeof type === 'string') {
-            return ({
-                name: name.trim(),
-                type: type.trim(),
-            });
+        // String format: "Field Name:type [config]"
+        const colonIdx = field.indexOf(':');
+        if (colonIdx === -1) return { name: field.trim(), type: 'text' };
+        const name = field.substring(0, colonIdx).trim();
+        const rest = field.substring(colonIdx + 1).trim();
+
+        // Parse type and optional config
+        const parts = rest.split(' ');
+        const baseType = parts[0]; // e.g. "slider", "radio", "counter", etc.
+
+        if (baseType === 'slider' && parts.length >= 3) {
+            return { name, type: 'slider', min: parseInt(parts[1]), max: parseInt(parts[2]) };
         }
+        if (baseType === 'radio') {
+            // "radio Opt1,Opt2,Opt3"
+            const options = parts.slice(1).join(' ').split(',').map(o => o.trim());
+            return { name, type: 'radio', options };
+        }
+        if (baseType === 'selection') {
+            const options = parts.slice(1).join(' ').split(',').map(o => o.trim());
+            return { name, type: 'selection', options };
+        }
+        return { name, type: baseType };
     }
 
     const fetchData = async () => {
@@ -143,29 +164,11 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
             <Tab.Navigator
                 screenOptions={({ route }) => ({
                     tabBarIcon: ({ focused, color, size }) => {
-                        let iconName:
-                            | "car"
-                            | "car-outline"
-                            | "game-controller"
-                            | "game-controller-outline"
-                            | "alarm"
-                            | "alarm-outline"
-                            | "checkmark-done"
-                            | "checkmark-done-outline";
-
-                        if (route.name === "PreGame")
-                            iconName = focused ? "checkmark-done" : "checkmark-done-outline";
-                        else if (route.name === "Auton") {
-                            iconName = focused ? "car" : "car-outline";
-                        } else if (route.name === "Teleop") {
-                            iconName = focused
-                                ? "game-controller"
-                                : "game-controller-outline";
-                        } else {
-                            iconName = focused ? "alarm" : "alarm-outline";
-                        }
-
-                        // You can return any component that you like here!
+                        let iconName: any = "alarm";
+                        if (route.name === "PreGame") iconName = focused ? "checkmark-done" : "checkmark-done-outline";
+                        else if (route.name === "Auton") iconName = focused ? "car" : "car-outline";
+                        else if (route.name === "Teleop") iconName = focused ? "game-controller" : "game-controller-outline";
+                        else if (route.name === "EndGame") iconName = focused ? "alarm" : "alarm-outline";
                         return <Ionicons name={iconName} size={size} color={color} />;
                     },
                     headerShown: false,
@@ -179,7 +182,7 @@ const Match: FC<MatchProps> = ({ route, navigation }) => {
                 })}
             >
                 <Tab.Screen name="PreGame" component={PreGameComponent} />
-                <Tab.Screen name="Auton" component={AutonComponent}/>
+                <Tab.Screen name="Auton" component={AutonComponent} />
                 <Tab.Screen name="Teleop" component={TeleopComponent} />
                 <Tab.Screen name="EndGame" component={EndGameComponent} />
             </Tab.Navigator>

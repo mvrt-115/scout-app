@@ -1,166 +1,208 @@
-import React, { FC, useEffect, useRef } from "react";
+import React, { FC, useRef, useState, useEffect } from "react";
 import Header from "./Header";
 import { useAuton, usePreGame } from "../Stores";
 import BottomSheet from "@gorhom/bottom-sheet";
 import QRCodeBottomSheet from "./QRCode";
-import { ScrollView, Image } from "react-native";
-import { IndexPath, Input, Select, SelectItem, Toggle } from "@ui-kitten/components";
-import Stopwatch from "./Stopwatch";
-import Counter from "./Counter";
+import { ScrollView, View, StyleSheet } from "react-native";
+import { Text, Toggle, Input, Radio, RadioGroup } from "@ui-kitten/components";
 import { useTheme } from "../contexts/ThemeContext";
+import DualRangeSlider from "./DualRangeSlider";
+import FastCounter from "./FastCounter";
 
 interface AutonProps {
   navigation: any;
   fields: any[];
 }
+
 const Auton: FC<AutonProps> = ({ navigation, fields }) => {
   const sheetRef = useRef<BottomSheet>(null);
   const teams = usePreGame((state) => state.teams);
   const alliance = usePreGame((state) => state.alliance);
   const regional = usePreGame((state) => state.regional);
-
-  const autonFields = useAuton((state) => state.autonFields);
   const setAutonFields = useAuton((state) => state.setAutonFields);
-  const setField = useAuton((state) => state.setField);
-  const validFields = (fields || []).filter(Boolean);
   const { colors } = useTheme();
 
-  useEffect(() => {
-    if (validFields.length === 0) return;
-    if (autonFields.length < validFields.length) {
-      setAutonFields(initializeAutonFields());
-    }
-  }, [validFields, autonFields.length, setAutonFields]);
+  // Dynamic state: one value per field
+  const [values, setValues] = useState<any[]>([]);
 
-  const initializeAutonFields = () => {
-    const temp: any[] = [];
-    validFields.forEach((value) => {
-      const type = value['type'];
-      if (type === "counter" || type === 'timer') temp.push(0);
-      else if (type === 'rating') temp.push(1);
-      else if (type === "boolean") temp.push(false);
-      else if (type === 'text') temp.push("");
-      else if (Array.isArray(type)) temp.push(type[0] ?? "");
-      else temp.push("");
+  // Initialize default values when fields load
+  useEffect(() => {
+    if (fields && fields.length > 0 && values.length === 0) {
+      const defaults = fields.map((f: any) => {
+        if (f.type === 'boolean') return false;
+        if (f.type === 'counter') return 0;
+        if (f.type === 'slider') return `${f.min || 0}-${Math.round(((f.max || 100) - (f.min || 0)) / 4)}`;
+        if (f.type === 'radio') return f.options?.[0] || '';
+        if (f.type === 'selection') return f.options?.[0] || '';
+        if (f.type === 'timer') return 0;
+        if (f.type === 'rating') return 0;
+        return '';
+      });
+      setValues(defaults);
+    }
+  }, [fields]);
+
+  // Push values to store whenever they change
+  useEffect(() => {
+    if (values.length > 0) {
+      setAutonFields(values);
+    }
+  }, [values]);
+
+  const updateValue = (index: number, val: any) => {
+    setValues(prev => {
+      const next = [...prev];
+      next[index] = val;
+      return next;
     });
-    return temp;
   };
+
+  const renderField = (field: any, index: number) => {
+    const val = values[index];
+    if (val === undefined) return null;
+
+    switch (field.type) {
+      case 'boolean':
+        return (
+          <View key={index} style={[s.card, { backgroundColor: colors.surface }]}>
+            <Toggle checked={!!val} onChange={(v: boolean) => updateValue(index, v)}>
+              {field.name}
+            </Toggle>
+          </View>
+        );
+
+      case 'counter':
+        return (
+          <FastCounter
+            key={index}
+            name={field.name}
+            value={val || 0}
+            onChange={(v: number) => updateValue(index, v)}
+            max={99}
+          />
+        );
+
+      case 'slider': {
+        // Parse current range value
+        const parts = (val + '').split('-');
+        const low = parseInt(parts[0]) || field.min || 0;
+        const high = parseInt(parts[1]) || low;
+        return (
+          <DualRangeSlider
+            key={index}
+            name={field.name}
+            min={field.min || 0}
+            max={field.max || 100}
+            step={5}
+            lowValue={low}
+            highValue={high}
+            onLowChange={(v: number) => updateValue(index, `${v}-${high}`)}
+            onHighChange={(v: number) => updateValue(index, `${low}-${v}`)}
+          />
+        );
+      }
+
+      case 'radio':
+        return (
+          <View key={index} style={[s.card, { backgroundColor: colors.surface }]}>
+            <Text style={[s.sectionTitle, { color: colors.text }]}>{field.name}</Text>
+            <RadioGroup
+              selectedIndex={field.options?.indexOf(val) ?? 0}
+              onChange={(i: number) => updateValue(index, field.options[i])}
+              style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}
+            >
+              {(field.options || []).map((opt: string, i: number) => (
+                <Radio key={i}>{opt}</Radio>
+              ))}
+            </RadioGroup>
+          </View>
+        );
+
+      case 'selection':
+        return (
+          <View key={index} style={[s.card, { backgroundColor: colors.surface }]}>
+            <Text style={[s.sectionTitle, { color: colors.text }]}>{field.name}</Text>
+            <RadioGroup
+              selectedIndex={field.options?.indexOf(val) ?? 0}
+              onChange={(i: number) => updateValue(index, field.options[i])}
+            >
+              {(field.options || []).map((opt: string, i: number) => (
+                <Radio key={i}>{opt}</Radio>
+              ))}
+            </RadioGroup>
+          </View>
+        );
+
+      case 'text':
+        return (
+          <View key={index} style={[s.card, { backgroundColor: colors.surface }]}>
+            <Text style={[s.sectionTitle, { color: colors.text }]}>{field.name}</Text>
+            <Input
+              multiline
+              textStyle={{ minHeight: 60 }}
+              placeholder={`Enter ${field.name}...`}
+              value={val || ''}
+              onChangeText={(v: string) => updateValue(index, v)}
+            />
+          </View>
+        );
+
+      case 'rating':
+        return (
+          <FastCounter
+            key={index}
+            name={field.name}
+            value={val || 0}
+            onChange={(v: number) => updateValue(index, v)}
+            max={5}
+          />
+        );
+
+      default:
+        return (
+          <View key={index} style={[s.card, { backgroundColor: colors.surface }]}>
+            <Text style={[s.sectionTitle, { color: colors.text }]}>{field.name}</Text>
+            <Input
+              placeholder={`Enter ${field.name}...`}
+              value={val + ''}
+              onChangeText={(v: string) => updateValue(index, v)}
+            />
+          </View>
+        );
+    }
+  };
+
   return (
     <>
       <Header
         matchInfo={{ teams, alliance, regional }}
-        title={"Auton"}
+        title={"AUTO (20s)"}
         toggleQRCode={() => sheetRef.current?.snapToIndex(1)}
         navigation={navigation}
       />
       <ScrollView
-        contentContainerStyle={{
-          display: "flex",
-          flexDirection: "column",
-          padding: 0,
-          backgroundColor: colors.background,
-        }}
-        keyboardDismissMode="on-drag"
+        contentContainerStyle={{ paddingBottom: 200, paddingHorizontal: 16, paddingTop: 12 }}
+        style={{ backgroundColor: colors.background }}
       >
-        {validFields.map((field, index) => {
-          if (field['type'] === 'counter' || field['type'] === 'rating') {
-            return (
-              <Counter
-                key={index}
-                rating={field['type'] === 'rating'}
-                name={field['name']}
-                onChange={(val) => {
-                  const temp: any[] = [...autonFields];
-                  temp[index] = val;
-                  setAutonFields(temp);
-                }}
-                value={autonFields[index] === '' ? 0 : autonFields[index]}
-              />
-            );
-          }
-          else if (field['type'] === 'boolean') {
-            return (
-              <Toggle
-                key={index}
-                checked={autonFields[index]}
-                onChange={(val) => {
-                  const temp: any[] = [...autonFields];
-                  temp[index] = val;
-                  setAutonFields(temp);
-                }}
-                style={{ marginTop: "3%", padding: 4 }}
-              >
-                {field['name']}
-              </Toggle>
-            );
-          }
-          else if (field['type'] === 'timer') {
-            return (
-              <Stopwatch
-                key={index}
-                name={field['name']}
-                onChange={setField}
-                fieldIndex={index}
-                postFields={autonFields}
-              />
-            );
-          }
-          else if (Array.isArray(field['type'])) {
-            const currentIndex = field['type'].indexOf(autonFields[index]);
-            return (
-              <Select
-                key={index}
-                selectedIndex={new IndexPath(currentIndex >= 0 ? currentIndex : 0)}
-                onSelect={(currIndex) => {
-                  const temp: any[] = [...autonFields];
-                  const selected = Array.isArray(currIndex) ? currIndex[0] : currIndex;
-                  temp[index] = field['type'][selected.row];
-                  setAutonFields(temp);
-                }}
-                label={field['name']}
-                style={{ marginBottom: "3%" }}
-                value={autonFields[index]}
-              >
-                {field['type'].map((val: string, currIndex: number) => (
-                  <SelectItem key={currIndex} title={val} />
-                ))}
-              </Select>
-            );
-          }
-          else {
-            return (
-              <Input
-                key={index}
-                multiline={true}
-                textStyle={{ minHeight: 64 }}
-                placeholder={field.name + "..."}
-                label={field['name']}
-                value={autonFields[index]}
-                onChangeText={(val) => {
-                  const temp: any[] = [...autonFields];
-                  temp[index] = val;
-                  setAutonFields(temp);
-                }}
-              />
-            );
-          }
-        })}
-		{ <Image 
-				source={require("../assets/autonstart.png")} 
-				style={{
-					width: 700,
-					height: 200,
-					maxHeight: 300,
-					alignSelf: 'center',
-					marginTop: 15,
-					marginBottom: 10,
-					borderRadius: 8,
-				}}
-			/> }
+        {fields && fields.map((field: any, index: number) => renderField(field, index))}
       </ScrollView>
       <QRCodeBottomSheet sheetRef={sheetRef} navigation={navigation} />
     </>
   );
 };
+
+const s = StyleSheet.create({
+  card: {
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  sectionTitle: { fontSize: 15, fontWeight: '700', marginBottom: 10 },
+});
 
 export default Auton;

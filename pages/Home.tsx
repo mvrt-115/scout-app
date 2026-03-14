@@ -147,25 +147,6 @@ const Home: React.FC<Props> = ({ navigation }) => {
             >
               Scout New Match
             </Button>
-            {!isLoggedIn ? <Button
-              onPress={() => {
-                navigation.navigate("Login");
-              }}
-              style={styles.button}
-              size="giant"
-            >
-              Login
-            </Button> : <></>}
-            <Button
-              onPress={() => {
-                navigation.navigate("PitScout");
-              }}
-              style={[styles.button, { shadowOpacity: 0 }]}
-              appearance="outline"
-              size="giant"
-            >
-              Pit Scout
-            </Button>
             <Button
               onPress={() => {
                 navigation.navigate("Match");
@@ -175,6 +156,16 @@ const Home: React.FC<Props> = ({ navigation }) => {
               size="giant"
             >
               Continue Scouting
+            </Button>
+            <Button
+              onPress={() => {
+                navigation.navigate("PitScout");
+              }}
+              style={[styles.button, { shadowOpacity: 0 }]}
+              appearance="outline"
+              size="giant"
+            >
+              Pit Scout
             </Button>
             <Button
               onPress={() => {

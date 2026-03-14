@@ -1,157 +1,246 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useRef, useState, useEffect } from "react";
 import Header from "./Header";
 import { useTeleop, usePreGame } from "../Stores";
 import BottomSheet from "@gorhom/bottom-sheet";
 import QRCodeBottomSheet from "./QRCode";
-import { Alert, Pressable, ScrollView, View } from "react-native";
-import { Button, IndexPath, Input, Select, SelectItem, Text, Toggle } from "@ui-kitten/components";
-import {
-  NavigationScreenProp,
-  NavigationState,
-  NavigationParams,
-} from "react-navigation";
-import Stopwatch from "./Stopwatch";
-import Counter from "./Counter";
+import { ScrollView, View, StyleSheet } from "react-native";
+import { Text, Toggle, Input, Radio, RadioGroup } from "@ui-kitten/components";
 import { useTheme } from "../contexts/ThemeContext";
+import DualRangeSlider from "./DualRangeSlider";
+import FastCounter from "./FastCounter";
+import CycleTimer from "./CycleTimer";
 
 interface TeleopProps {
-  navigation: any; // NavigationScreenProp<NavigationState, NavigationParams>;
+  navigation: any;
   fields: any[];
 }
 
 const Teleop: FC<TeleopProps> = ({ navigation, fields }) => {
+  const sheetRef = useRef<BottomSheet>(null);
   const teams = usePreGame((state) => state.teams);
   const alliance = usePreGame((state) => state.alliance);
   const regional = usePreGame((state) => state.regional);
-  const sheetRef = useRef<BottomSheet>(null);
-  const teleopFields = useTeleop((state) => state.teleopFields);
   const setTeleopFields = useTeleop((state) => state.setTeleopFields);
-  const setField = useTeleop((state) => state.setField);
-  const [playedDefense, setPlayedDefense] = useState<boolean>(false);
-  const validFields = (fields || []).filter(Boolean);
   const { colors } = useTheme();
 
+  // Dynamic state: one value per field
+  const [values, setValues] = useState<any[]>([]);
+  // Separate cycles state for timer fields
+  const [cyclesMap, setCyclesMap] = useState<Record<number, number[]>>({});
+
+  // Initialize default values when fields load
   useEffect(() => {
-    if (validFields.length === 0) return;
-    if (teleopFields.length < validFields.length) {
-      setTeleopFields(initializeTeleopFields());
+    if (fields && fields.length > 0 && values.length === 0) {
+      const defaults = fields.map((f: any) => {
+        if (f.type === 'boolean') return false;
+        if (f.type === 'counter') return 0;
+        if (f.type === 'slider') return `${f.min || 0}-${Math.round(((f.max || 100) - (f.min || 0)) / 4)}`;
+        if (f.type === 'radio') return f.options?.[0] || '';
+        if (f.type === 'selection') return f.options?.[0] || '';
+        if (f.type === 'timer') return '0';
+        if (f.type === 'rating') return 0;
+        return '';
+      });
+      setValues(defaults);
     }
-  }, [validFields, teleopFields.length, setTeleopFields]);
-  const initializeTeleopFields = () => {
-    const tempTeleop: any[] = [];
-    validFields.map((value) => {
-      const type = value['type'];
-      if (type == "counter" || type == "timer") tempTeleop.push(0);
-      else if (type == 'rating') tempTeleop.push(1);
-      else if (type == "boolean") tempTeleop.push(false);
-      else if (type == 'text') tempTeleop.push("");
-      else if (Array.isArray(type))
-        tempTeleop.push(type[0] ?? "");
-      else
-        tempTeleop.push("");
+  }, [fields]);
+
+  // Push values to store whenever they change
+  useEffect(() => {
+    if (values.length > 0) {
+      setTeleopFields(values);
+    }
+  }, [values]);
+
+  const updateValue = (index: number, val: any) => {
+    setValues(prev => {
+      const next = [...prev];
+      next[index] = val;
+      return next;
     });
-    return tempTeleop;
-  }
+  };
+
+  const renderField = (field: any, index: number) => {
+    const val = values[index];
+    if (val === undefined) return null;
+
+    switch (field.type) {
+      case 'boolean':
+        return (
+          <View key={index} style={[s.card, { backgroundColor: colors.surface }]}>
+            <Toggle checked={!!val} onChange={(v: boolean) => updateValue(index, v)}>
+              {field.name}
+            </Toggle>
+          </View>
+        );
+
+      case 'counter':
+        return (
+          <FastCounter
+            key={index}
+            name={field.name}
+            value={val || 0}
+            onChange={(v: number) => updateValue(index, v)}
+            max={99}
+          />
+        );
+
+      case 'slider': {
+        const parts = (val + '').split('-');
+        const low = parseInt(parts[0]) || field.min || 0;
+        const high = parseInt(parts[1]) || low;
+        return (
+          <DualRangeSlider
+            key={index}
+            name={field.name}
+            min={field.min || 0}
+            max={field.max || 100}
+            step={5}
+            lowValue={low}
+            highValue={high}
+            onLowChange={(v: number) => updateValue(index, `${v}-${high}`)}
+            onHighChange={(v: number) => updateValue(index, `${low}-${v}`)}
+          />
+        );
+      }
+
+      case 'timer': {
+        const cycles = cyclesMap[index] || [];
+        const avgCycle = cycles.length > 0
+          ? (cycles.reduce((a, b) => a + b, 0) / cycles.length).toFixed(1)
+          : '0';
+        return (
+          <View key={index}>
+            <CycleTimer
+              name={field.name}
+              cycles={cycles}
+              addCycleOnStop={!field.name.toLowerCase().includes('intake')}
+              onAddCycle={(t: number) => {
+                const newCycles = [...cycles, t];
+                setCyclesMap(prev => ({ ...prev, [index]: newCycles }));
+                const newAvg = (newCycles.reduce((a, b) => a + b, 0) / newCycles.length).toFixed(1);
+                updateValue(index, newAvg);
+              }}
+              onReset={() => {
+                setCyclesMap(prev => ({ ...prev, [index]: [] }));
+                updateValue(index, '0');
+              }}
+            />
+          </View>
+        );
+      }
+
+      case 'radio':
+        return (
+          <View key={index} style={[s.card, { backgroundColor: colors.surface }]}>
+            <Text style={[s.sectionTitle, { color: colors.text }]}>{field.name}</Text>
+            <RadioGroup
+              selectedIndex={field.options?.indexOf(val) ?? 0}
+              onChange={(i: number) => updateValue(index, field.options[i])}
+              style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}
+            >
+              {(field.options || []).map((opt: string, i: number) => (
+                <Radio key={i}>{opt}</Radio>
+              ))}
+            </RadioGroup>
+          </View>
+        );
+
+      case 'selection':
+        return (
+          <View key={index} style={[s.card, { backgroundColor: colors.surface }]}>
+            <Text style={[s.sectionTitle, { color: colors.text }]}>{field.name}</Text>
+            <RadioGroup
+              selectedIndex={field.options?.indexOf(val) ?? 0}
+              onChange={(i: number) => updateValue(index, field.options[i])}
+            >
+              {(field.options || []).map((opt: string, i: number) => (
+                <Radio key={i}>{opt}</Radio>
+              ))}
+            </RadioGroup>
+          </View>
+        );
+
+      case 'text':
+        return (
+          <View key={index} style={[s.card, { backgroundColor: colors.surface }]}>
+            <Text style={[s.sectionTitle, { color: colors.text }]}>{field.name}</Text>
+            <Input
+              multiline
+              textStyle={{ minHeight: 60 }}
+              placeholder={`Enter ${field.name}...`}
+              value={val || ''}
+              onChangeText={(v: string) => updateValue(index, v)}
+            />
+          </View>
+        );
+
+      case 'rating':
+        return (
+          <FastCounter
+            key={index}
+            name={field.name}
+            value={val || 0}
+            onChange={(v: number) => updateValue(index, v)}
+            max={5}
+          />
+        );
+
+      default:
+        return (
+          <View key={index} style={[s.card, { backgroundColor: colors.surface }]}>
+            <Text style={[s.sectionTitle, { color: colors.text }]}>{field.name}</Text>
+            <Input
+              placeholder={`Enter ${field.name}...`}
+              value={val + ''}
+              onChangeText={(v: string) => updateValue(index, v)}
+            />
+          </View>
+        );
+    }
+  };
 
   return (
     <>
       <Header
         matchInfo={{ teams, alliance, regional }}
-        title={"Teleop"}
+        title={"TELEOP (2:20)"}
         toggleQRCode={() => sheetRef.current?.snapToIndex(1)}
         navigation={navigation}
       />
       <ScrollView
-        contentContainerStyle={{
-          display: "flex",
-          flexDirection: "column",
-          padding: "10%",
-          backgroundColor: colors.background,
-        }}
-        keyboardDismissMode="on-drag"
+        contentContainerStyle={{ paddingBottom: 200, paddingHorizontal: 16, paddingTop: 12 }}
+        style={{ backgroundColor: colors.background }}
       >
-      
-        {validFields.map((field, index) => {
-          if (field['type'] == 'counter' || field['type'] == 'rating') {
-            var name=field['name'];
-            return (
-              <Counter
-                rating={field['type'] == 'rating'}
-                name={name}
-                onChange={(val) => {
-                  const temp: any[] = [...teleopFields];
-                  temp[index] = val;
-                  setTeleopFields(temp);
-                }}
-                value={teleopFields[index] == '' ? 0 : teleopFields[index]}
-              />
-            )
-          }
-          else if (field['type'] == 'boolean') {
-            return (
-              <Toggle
-                checked={teleopFields[index]}
-                onChange={(val) => {
-                  const temp: any[] = [...teleopFields];
-                  temp[index] = val;
-                  setTeleopFields(temp);
-                }}
-                style={{ marginTop: "3%", padding: 4 }}
-              >
-                {field['name']}
-              </Toggle>
-            )
-          }
-          else if (field['type'] == 'timer') {
-            return (
-              <Stopwatch
-                name={field['name']}
-                onChange={setField}
-                fieldIndex={index}
-                postFields={teleopFields}
-              />
-            )
-          }
-          else if (Array.isArray(field['type'])) {
-            const currentIndex = field['type'].indexOf(teleopFields[index]);
-            return <Select
-              selectedIndex={new IndexPath(currentIndex >= 0 ? currentIndex : 0)}
-              onSelect={(currIndex) => {
-                const temp: any[] = [...teleopFields];
-                const selected = Array.isArray(currIndex) ? currIndex[0] : currIndex;
-                temp[index] = field['type'][selected.row];
-                setTeleopFields(temp);
-              }}
-              label={field['name']}
-              style={{ marginBottom: "3%" }}
-              value={teleopFields[index]}
-            >
-              {field['type'].map((val, currIndex) => {
-                return <SelectItem title={val} />
-              })}
-            </Select>
-          }
-          else {
-            return (
-              <Input
-                multiline={true}
-                textStyle={{ minHeight: 64 }}
-                placeholder={field.name + "..."}
-                label={field['name']}
-                value={teleopFields[index]}
-                onChangeText={(val) => {
-                  const temp: any[] = [...teleopFields];
-                  temp[index] = val;
-                  setTeleopFields(temp);
-                }}
-              />
-            )
-          }
-        })}
+        {/* Render Timers at the top */}
+        {fields && fields
+          .map((field, index) => ({ field, index }))
+          .filter(item => item.field.type === 'timer')
+          .map(item => renderField(item.field, item.index))}
+
+        {/* Render everything else */}
+        {fields && fields
+          .map((field, index) => ({ field, index }))
+          .filter(item => item.field.type !== 'timer')
+          .map(item => renderField(item.field, item.index))}
       </ScrollView>
       <QRCodeBottomSheet sheetRef={sheetRef} navigation={navigation} />
     </>
   );
 };
+
+const s = StyleSheet.create({
+  card: {
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  sectionTitle: { fontSize: 15, fontWeight: '700', marginBottom: 10 },
+});
 
 export default Teleop;
